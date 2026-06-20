@@ -31,10 +31,11 @@ const Checkout = () => {
 
   if (cart.length === 0 && !success) {
     return (
-      <div className="max-w-7xl mx-auto px-6 py-24 text-center">
-        <ShoppingBag className="h-12 w-12 text-gray-500 mx-auto mb-4" />
-        <h2 className="text-xl font-bold text-white mb-2">Checkout is Empty</h2>
-        <Link to="/catalog" className="text-brand-400 font-semibold underline">Browse Catalog</Link>
+      <div className="max-w-7xl mx-auto px-6 py-28 text-center animate-slide-up">
+        <ShoppingBag className="h-16 w-16 text-slate-400 mx-auto mb-6" />
+        <h2 className="text-2xl font-black text-slate-805 mb-2">Checkout is Empty</h2>
+        <p className="text-slate-500 text-sm mb-8 font-semibold">You have no items in your cart to schedule checkout.</p>
+        <Link to="/" className="text-brand-650 hover:text-brand-500 font-bold uppercase tracking-wider text-xs underline decoration-brand-500/50">Browse Catalog</Link>
       </div>
     );
   }
@@ -92,18 +93,18 @@ const Checkout = () => {
 
   if (success) {
     return (
-      <div className="max-w-md mx-auto px-6 py-24 text-center">
-        <div className="glass-premium p-8 rounded-3xl border-brand-500/20 relative">
-          <div className="h-16 w-16 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-3xl flex items-center justify-center mx-auto mb-6 scale-100 animate-pulse-glow">
-            <ShieldCheck className="h-8 w-8" />
+      <div className="max-w-md mx-auto px-6 py-24 text-center animate-slide-up">
+        <div className="glass-premium p-8 rounded-3xl border border-slate-250/60 shadow-2xl relative">
+          <div className="h-20 w-20 bg-emerald-50 border border-emerald-250 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 scale-100 animate-pulse-glow">
+            <ShieldCheck className="h-10 w-10" />
           </div>
-          <h2 className="text-2xl font-bold text-white mb-2">Order Confirmed!</h2>
-          <p className="text-gray-400 text-sm mb-8">
+          <h2 className="text-3xl font-black text-slate-900 mb-3">Order Placed!</h2>
+          <p className="text-slate-500 text-xs leading-relaxed mb-10 font-semibold">
             Your delivery has been successfully scheduled. You can now track your order status and manage your active leases in the dashboard.
           </p>
           <Link
             to="/my-rentals"
-            className="w-full bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-semibold rounded-2xl py-3.5 flex items-center justify-center space-x-2 transition-all duration-200 shadow-lg"
+            className="w-full bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold rounded-2xl py-4 flex items-center justify-center space-x-2 transition-all duration-300 shadow-xl shadow-brand-500/20"
           >
             Go to My Rentals
           </Link>
@@ -113,36 +114,39 @@ const Checkout = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
+    <div className="max-w-7xl mx-auto px-6 py-12 relative animate-slide-up">
       
+      {/* Background blur */}
+      <div className="absolute top-1/4 right-1/4 w-[300px] h-[300px] bg-brand-500/5 rounded-full blur-[100px] pointer-events-none" />
+
       {/* Title */}
       <div className="mb-10 text-center md:text-left">
-        <h1 className="text-4xl font-extrabold text-white">Delivery & Checkout</h1>
-        <p className="text-gray-400 text-sm mt-1">Provide address details and pick an available slot to complete your lease</p>
+        <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">Delivery & Checkout</h1>
+        <p className="text-slate-500 text-sm mt-2 font-semibold">Provide address details and pick an available slot to complete your lease.</p>
       </div>
 
       <div className="grid lg:grid-cols-12 gap-8 items-start">
         
         {/* Left Form Panel */}
-        <form onSubmit={handleCheckoutSubmit} className="lg:col-span-8 space-y-6">
+        <form onSubmit={handleCheckoutSubmit} className="lg:col-span-8 space-y-8">
           
           {/* Error alerts */}
           {errorMsg && (
-            <div className="bg-red-950/30 border border-red-500/20 text-red-400 p-4 rounded-2xl text-xs flex items-start space-x-2 animate-shake">
-              <AlertCircle className="h-4 w-4 mr-1 shrink-0 mt-0.5" />
-              <span>{errorMsg}</span>
+            <div className="bg-red-50 border border-red-200 text-red-750 p-4.5 rounded-2xl text-xs flex items-start space-x-2.5 shadow-md">
+              <AlertCircle className="h-4.5 w-4.5 mr-1 shrink-0 mt-0.5" />
+              <span className="font-semibold">{errorMsg}</span>
             </div>
           )}
 
           {/* Section 1: Shipping Address */}
-          <div className="glass p-6 md:p-8 rounded-3xl border-white/5 space-y-5">
-            <h2 className="text-xl font-bold text-white flex items-center mb-1">
-              <Truck className="h-5 w-5 mr-2 text-brand-400" />
+          <div className="glass p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+            <h2 className="text-xl font-extrabold text-slate-900 flex items-center mb-1">
+              <Truck className="h-5 w-5 mr-2.5 text-brand-600" />
               1. Delivery Address
             </h2>
             
             <div>
-              <label className="block text-gray-400 text-xs font-semibold uppercase mb-1.5" htmlFor="street">
+              <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-2.5" htmlFor="street">
                 Street Address
               </label>
               <input
@@ -151,13 +155,13 @@ const Checkout = () => {
                 value={street}
                 onChange={(e) => setStreet(e.target.value)}
                 placeholder="Apartment, building, suite, street name"
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white placeholder-gray-500 text-sm focus:border-brand-500 focus:outline-none"
+                className="w-full glass-input rounded-xl py-3 px-4 text-slate-800 placeholder-gray-400 text-sm"
               />
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4.5">
               <div>
-                <label className="block text-gray-400 text-xs font-semibold uppercase mb-1.5" htmlFor="city">
+                <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-2.5" htmlFor="city">
                   City
                 </label>
                 <input
@@ -166,12 +170,12 @@ const Checkout = () => {
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                   placeholder="e.g. New York"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white placeholder-gray-500 text-sm focus:border-brand-500 focus:outline-none"
+                  className="w-full glass-input rounded-xl py-3 px-4 text-slate-800 placeholder-gray-400 text-sm"
                 />
               </div>
 
               <div>
-                <label className="block text-gray-400 text-xs font-semibold uppercase mb-1.5" htmlFor="state">
+                <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-2.5" htmlFor="state">
                   State
                 </label>
                 <input
@@ -180,12 +184,12 @@ const Checkout = () => {
                   value={state}
                   onChange={(e) => setState(e.target.value)}
                   placeholder="e.g. NY"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white placeholder-gray-500 text-sm focus:border-brand-500 focus:outline-none"
+                  className="w-full glass-input rounded-xl py-3 px-4 text-slate-800 placeholder-gray-400 text-sm"
                 />
               </div>
 
               <div className="col-span-2 md:col-span-1">
-                <label className="block text-gray-400 text-xs font-semibold uppercase mb-1.5" htmlFor="zip">
+                <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-2.5" htmlFor="zip">
                   Zip / Postal Code
                 </label>
                 <input
@@ -194,25 +198,25 @@ const Checkout = () => {
                   value={zipCode}
                   onChange={(e) => setZipCode(e.target.value)}
                   placeholder="10001"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white placeholder-gray-500 text-sm focus:border-brand-500 focus:outline-none"
+                  className="w-full glass-input rounded-xl py-3 px-4 text-slate-800 placeholder-gray-400 text-sm"
                 />
               </div>
             </div>
           </div>
 
           {/* Section 2: Delivery Slot */}
-          <div className="glass p-6 md:p-8 rounded-3xl border-white/5 space-y-5">
-            <h2 className="text-xl font-bold text-white flex items-center mb-1">
-              <Calendar className="h-5 w-5 mr-2 text-indigo-400" />
+          <div className="glass p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+            <h2 className="text-xl font-extrabold text-slate-900 flex items-center mb-1">
+              <Calendar className="h-5 w-5 mr-2.5 text-indigo-600" />
               2. Delivery Scheduling
             </h2>
-            <p className="text-gray-400 text-xs leading-relaxed max-w-lg">
-              We need a scheduled time to deliver and set up your items. Slots are subject to a capacity check.
+            <p className="text-slate-500 text-xs leading-relaxed max-w-lg font-semibold">
+              We need a scheduled time to deliver and set up your items. Slots are subject to a logistics capacity check.
             </p>
 
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-2 gap-4.5">
               <div>
-                <label className="block text-gray-400 text-xs font-semibold uppercase mb-1.5" htmlFor="date">
+                <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-2.5" htmlFor="date">
                   Delivery Date
                 </label>
                 <input
@@ -221,19 +225,19 @@ const Checkout = () => {
                   min={minDateString}
                   value={deliveryDate}
                   onChange={(e) => setDeliveryDate(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white text-sm focus:border-indigo-500 focus:outline-none"
+                  className="w-full glass-input rounded-xl py-3 px-4 text-slate-800 text-sm"
                 />
               </div>
 
               <div>
-                <label className="block text-gray-400 text-xs font-semibold uppercase mb-1.5" htmlFor="slot">
+                <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-2.5" htmlFor="slot">
                   Select Time Slot
                 </label>
                 <select
                   id="slot"
                   value={deliverySlot}
                   onChange={(e) => setDeliverySlot(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white text-sm focus:border-indigo-500 focus:outline-none"
+                  className="w-full bg-white border border-slate-200 hover:border-slate-250 rounded-xl py-3 px-4 text-slate-800 text-sm focus:outline-none focus:border-brand-500 transition-colors"
                 >
                   <option value="09:00 AM - 01:00 PM">Morning (09:00 AM - 01:00 PM)</option>
                   <option value="02:00 PM - 06:00 PM">Afternoon (02:00 PM - 06:00 PM)</option>
@@ -244,12 +248,12 @@ const Checkout = () => {
           </div>
 
           {/* Section 3: Payment Simulation */}
-          <div className="glass p-6 md:p-8 rounded-3xl border-white/5 space-y-5">
-            <h2 className="text-xl font-bold text-white flex items-center mb-1">
-              <CreditCard className="h-5 w-5 mr-2 text-emerald-400" />
+          <div className="glass p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-5">
+            <h2 className="text-xl font-extrabold text-slate-900 flex items-center mb-1">
+              <CreditCard className="h-5 w-5 mr-2.5 text-emerald-600" />
               3. Payment Verification
             </h2>
-            <p className="text-gray-400 text-xs">
+            <p className="text-slate-550 text-xs leading-relaxed font-semibold">
               This is a development simulation. No real credit card details will be charged. Click checkout below to complete the lease transaction.
             </p>
           </div>
@@ -258,7 +262,7 @@ const Checkout = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold rounded-2xl py-4 flex items-center justify-center space-x-2 shadow-xl shadow-brand-500/10 hover:shadow-brand-500/20 transform hover:-translate-y-0.5 active:scale-95 transition-all duration-200 disabled:opacity-50"
+            className="w-full bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold rounded-2xl py-4 flex items-center justify-center space-x-2.5 shadow-xl shadow-brand-500/20 hover:shadow-brand-500/35 transform hover:-translate-y-0.5 active:scale-95 transition-all duration-300 disabled:opacity-50"
           >
             {loading ? <span>Scheduling Delivery...</span> : <span>Confirm Order & Schedule Delivery</span>}
           </button>
@@ -267,43 +271,43 @@ const Checkout = () => {
 
         {/* Right Summary Panel */}
         <div className="lg:col-span-4">
-          <div className="glass-premium p-6 rounded-3xl border border-brand-500/10">
+          <div className="glass-premium p-6.5 rounded-3xl border border-slate-250/60 shadow-xl">
             
-            <h3 className="text-lg font-bold text-white mb-4">Summary</h3>
+            <h3 className="text-lg font-bold text-slate-900 mb-5 uppercase tracking-wide">Summary</h3>
             
-            <div className="max-h-52 overflow-y-auto space-y-4 mb-4 pr-1">
+            <div className="max-h-56 overflow-y-auto space-y-4 mb-5 pr-1.5 scrollbar-thin">
               {cart.map((item) => (
-                <div key={`${item.productId}-${item.tenure}`} className="flex justify-between items-start text-xs border-b border-white/5 pb-2.5">
+                <div key={`${item.productId}-${item.tenure}`} className="flex justify-between items-start text-xs border-b border-slate-100 pb-3">
                   <div>
-                    <span className="text-white font-semibold block line-clamp-1">{item.product.name}</span>
-                    <span className="text-gray-500">{item.tenure} mo plan • Qty {item.quantity}</span>
+                    <span className="text-slate-800 font-bold block line-clamp-1">{item.product.name}</span>
+                    <span className="text-slate-500 font-semibold">{item.tenure} mo plan • Qty {item.quantity}</span>
                   </div>
-                  <span className="text-white font-semibold">₹{item.product.pricing[item.tenure] * item.quantity}</span>
+                  <span className="text-slate-800 font-extrabold">₹{item.product.pricing[item.tenure] * item.quantity}</span>
                 </div>
               ))}
             </div>
 
-            <div className="space-y-2.5 border-b border-white/5 pb-4 mb-4 text-xs text-gray-400">
-              <div className="flex justify-between">
-                <span>Monthly Subtotal</span>
-                <span className="text-white">₹{totalMonthly}</span>
+            <div className="space-y-3.5 border-b border-slate-150 pb-5 mb-5 text-xs font-semibold">
+              <div className="flex justify-between text-slate-550">
+                <span className="text-slate-500">Monthly Subtotal</span>
+                <span className="text-slate-850 font-extrabold">₹{totalMonthly}</span>
               </div>
-              <div className="flex justify-between">
-                <span>Security Deposit Subtotal</span>
-                <span className="text-white">₹{totalDeposit}</span>
+              <div className="flex justify-between text-slate-550">
+                <span className="text-slate-500">Security Deposit Subtotal</span>
+                <span className="text-slate-850 font-extrabold">₹{totalDeposit}</span>
               </div>
-              <div className="flex justify-between">
-                <span>Delivery & Setup</span>
-                <span className="text-emerald-400 font-bold uppercase">Free</span>
+              <div className="flex justify-between text-slate-550">
+                <span className="text-slate-500">Delivery & Setup</span>
+                <span className="text-emerald-700 font-extrabold uppercase text-[10px] tracking-wider bg-emerald-50 px-2 py-0.5 rounded shadow-sm">Free</span>
               </div>
             </div>
 
             <div className="flex justify-between items-center mb-1">
-              <span className="text-sm font-bold text-white">Due Today</span>
-              <span className="text-xl font-extrabold text-brand-400">₹{totalMonthly + totalDeposit}</span>
+              <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">Due Today</span>
+              <span className="text-2xl font-black text-brand-600">₹{totalMonthly + totalDeposit}</span>
             </div>
             
-            <span className="text-[10px] text-gray-500 text-right block leading-relaxed mb-4">
+            <span className="text-[9px] text-slate-450 text-right block font-bold leading-relaxed mt-2.5">
               Security deposits will be returned in full upon lease completion.
             </span>
 
