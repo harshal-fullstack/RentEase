@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { Search, SlidersHorizontal, Package, Sofa, Refrigerator, Info } from 'lucide-react';
+import { Search, Package, Sofa, Refrigerator, Info } from 'lucide-react';
 
 const Catalog = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -50,7 +50,11 @@ const Catalog = () => {
       }
     };
 
-    fetchProducts();
+    const delayDebounce = setTimeout(() => {
+      fetchProducts();
+    }, 150); // Small debounce
+
+    return () => clearTimeout(delayDebounce);
   }, [categoryFilter, searchQuery]);
 
   const handleCategorySelect = (category) => {
@@ -75,31 +79,36 @@ const Catalog = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
+    <div className="max-w-7xl mx-auto px-6 py-12 relative animate-slide-up">
       
+      {/* Background glow */}
+      <div className="absolute top-0 right-1/4 w-[350px] h-[350px] bg-brand-500/5 rounded-full blur-[100px] pointer-events-none" />
+
       {/* Page Title */}
-      <div className="mb-10 text-center md:text-left">
-        <h1 className="text-4xl font-extrabold text-white">Rental Catalog</h1>
-        <p className="text-gray-400 text-sm mt-1">Select furniture and appliances to customize your perfect living space</p>
+      <div className="mb-12 text-center md:text-left">
+        <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">Rental Catalog</h1>
+        <p className="text-slate-500 text-sm mt-2 max-w-xl font-medium">
+          Select premium furniture and appliances to customize your perfect living space with complete flexibility.
+        </p>
       </div>
 
       {/* Search & Filter Bar */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8 bg-slate-900/40 p-4 rounded-2xl border border-white/5">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12 glass p-4.5 rounded-3xl border border-slate-200 shadow-sm">
         
         {/* Category Tabs */}
-        <div className="flex bg-slate-950 p-1.5 rounded-xl border border-slate-800/80 w-full md:w-auto">
+        <div className="flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200/80 w-full md:w-auto">
           {['All', 'Furniture', 'Appliances'].map((cat) => (
             <button
               key={cat}
               onClick={() => handleCategorySelect(cat)}
-              className={`flex-1 md:flex-none px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center justify-center space-x-1.5 ${
+              className={`flex-1 md:flex-none px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center justify-center space-x-2 ${
                 categoryFilter === cat
                   ? 'bg-gradient-to-r from-brand-600 to-indigo-600 text-white shadow-md'
-                  : 'text-gray-400 hover:text-white'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              {cat === 'Furniture' && <Sofa className="h-4 w-4" />}
-              {cat === 'Appliances' && <Refrigerator className="h-4 w-4" />}
+              {cat === 'Furniture' && <Sofa className="h-3.5 w-3.5" />}
+              {cat === 'Appliances' && <Refrigerator className="h-3.5 w-3.5" />}
               <span>{cat}</span>
             </button>
           ))}
@@ -112,9 +121,9 @@ const Catalog = () => {
             placeholder="Search items (e.g. bed, sofa, fridge)..."
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            className="w-full bg-slate-950 border border-slate-800/80 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:border-brand-500 focus:outline-none transition-colors duration-200"
+            className="w-full bg-white border border-slate-200 rounded-2xl py-3 pl-11 pr-4 text-slate-800 text-xs placeholder-slate-450 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500/30 transition-all duration-300"
           />
-          <button type="submit" className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500 hover:text-brand-400">
+          <button type="submit" className="absolute inset-y-0 left-0 pl-4.5 flex items-center text-slate-450 hover:text-brand-600 transition-colors">
             <Search className="h-4 w-4" />
           </button>
         </form>
@@ -123,26 +132,26 @@ const Catalog = () => {
 
       {/* Main Content Area */}
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-24 space-y-3">
+        <div className="flex flex-col items-center justify-center py-32 space-y-4">
           <div className="h-10 w-10 border-4 border-brand-500 border-t-transparent rounded-full animate-spin" />
-          <span className="text-gray-400 text-sm">Fetching catalogue items...</span>
+          <span className="text-slate-500 text-xs font-bold tracking-wider uppercase">Loading Products...</span>
         </div>
       ) : error ? (
-        <div className="bg-red-950/20 border border-red-500/10 text-red-400 p-8 rounded-2xl text-center max-w-xl mx-auto my-12">
-          <p className="font-bold text-lg mb-2">Service Offline</p>
-          <p className="text-sm mb-4">{error}</p>
+        <div className="bg-red-50 border border-red-200 text-red-700 p-10 rounded-3xl text-center max-w-xl mx-auto my-12 shadow-md">
+          <p className="font-extrabold text-xl mb-2 text-red-800">Connection Offline</p>
+          <p className="text-xs text-red-650 mb-6">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="px-6 py-2.5 bg-red-900/20 border border-red-500/20 text-red-300 rounded-xl hover:bg-red-900/40 text-xs font-semibold transition-colors duration-200"
+            className="px-6 py-3 bg-red-100 border border-red-200 text-red-700 rounded-xl hover:bg-red-200 text-xs font-bold tracking-wider uppercase transition-colors"
           >
             Retry Connection
           </button>
         </div>
       ) : products.length === 0 ? (
-        <div className="text-center py-20 bg-slate-900/10 rounded-2xl border border-dashed border-white/5">
-          <Package className="h-12 w-12 text-gray-600 mx-auto mb-4" />
-          <h3 className="text-lg font-bold text-white mb-1">No products found</h3>
-          <p className="text-gray-400 text-sm max-w-xs mx-auto">Try checking your search term or select another category filter.</p>
+        <div className="text-center py-24 glass rounded-3xl border border-slate-200/80">
+          <Package className="h-14 w-14 text-slate-400 mx-auto mb-5" />
+          <h3 className="text-xl font-bold text-slate-700 mb-2">No Products Found</h3>
+          <p className="text-slate-500 text-xs max-w-xs mx-auto">Try checking your search term or select another category filter.</p>
         </div>
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -152,37 +161,38 @@ const Catalog = () => {
             return (
               <div
                 key={product._id}
-                className="glass rounded-3xl overflow-hidden border-white/5 hover:border-brand-500/25 transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-brand-500/5 transition-all duration-300 flex flex-col justify-between"
+                className="bg-white border border-slate-200 rounded-3xl overflow-hidden hover:border-brand-500/40 transform hover:-translate-y-1.5 hover:shadow-xl hover:shadow-brand-500/5 transition-all duration-350 flex flex-col justify-between"
               >
                 <div>
                   {/* Image container */}
-                  <div className="h-52 w-full relative overflow-hidden bg-slate-900">
+                  <div className="h-56 w-full relative overflow-hidden bg-slate-100 border-b border-slate-100">
                     <img
                       src={product.imageUrl}
                       alt={product.name}
                       className="h-full w-full object-cover transform hover:scale-105 transition-transform duration-500"
                       loading="lazy"
                     />
+                    
                     {/* Category Label */}
-                    <span className={`absolute top-4 left-4 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md shadow-md ${
+                    <span className={`absolute top-4 left-4 text-[9px] font-extrabold uppercase tracking-widest px-2.5 py-1.5 rounded-lg shadow-sm border ${
                       product.category === 'Furniture'
-                        ? 'bg-brand-600 text-white'
-                        : 'bg-indigo-600 text-indigo-100'
+                        ? 'bg-brand-50 border-brand-200 text-brand-700'
+                        : 'bg-indigo-50 border-indigo-200 text-indigo-700'
                     }`}>
                       {product.category}
                     </span>
                     
                     {/* Inventory status badge */}
                     {product.inventory === 0 ? (
-                      <span className="absolute top-4 right-4 bg-red-950/80 border border-red-500/25 text-red-400 text-[10px] font-bold uppercase px-2 py-1 rounded-md">
+                      <span className="absolute top-4 right-4 bg-red-50 border border-red-200 text-red-600 text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1.5 rounded-lg shadow-sm">
                         Out of Stock
                       </span>
                     ) : product.inventory <= 3 ? (
-                      <span className="absolute top-4 right-4 bg-amber-950/80 border border-amber-500/25 text-amber-400 text-[10px] font-bold uppercase px-2 py-1 rounded-md">
+                      <span className="absolute top-4 right-4 bg-amber-50 border border-amber-200 text-amber-600 text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1.5 rounded-lg shadow-sm">
                         Only {product.inventory} Left
                       </span>
                     ) : (
-                      <span className="absolute top-4 right-4 bg-emerald-950/80 border border-emerald-500/25 text-emerald-400 text-[10px] font-bold uppercase px-2 py-1 rounded-md">
+                      <span className="absolute top-4 right-4 bg-emerald-50 border border-emerald-250 text-emerald-700 text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1.5 rounded-lg shadow-sm">
                         In Stock
                       </span>
                     )}
@@ -190,31 +200,33 @@ const Catalog = () => {
 
                   {/* Body Content */}
                   <div className="p-6">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs text-brand-400 font-semibold uppercase tracking-wider">{product.subCategory}</span>
-                      <span className="text-gray-500 text-xs flex items-center">
-                        <Info className="h-3 w-3 mr-1" />
-                        Refundable Deposit: ₹{product.deposit}
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-[10px] text-brand-600 font-extrabold uppercase tracking-widest">{product.subCategory}</span>
+                      <span className="text-slate-500 text-[10px] flex items-center font-bold uppercase tracking-wider">
+                        <Info className="h-3 w-3 mr-1 text-slate-400" />
+                        Deposit: ₹{product.deposit}
                       </span>
                     </div>
-                    <h3 className="text-xl font-bold text-white mb-2 line-clamp-1">{product.name}</h3>
-                    <p className="text-gray-400 text-xs leading-relaxed line-clamp-2">{product.description}</p>
+                    <h3 className="text-xl font-bold text-slate-800 mb-2.5 line-clamp-1">{product.name}</h3>
+                    <p className="text-slate-500 text-xs leading-relaxed line-clamp-2">{product.description}</p>
                   </div>
                 </div>
 
                 {/* Footer price & view details */}
-                <div className="p-6 pt-0 border-t border-white/5 flex items-center justify-between mt-4">
+                <div className="p-6 pt-0 border-t border-slate-100 flex items-center justify-between mt-3">
                   <div>
-                    <span className="text-gray-500 text-[10px] block uppercase tracking-wider">Starting at</span>
-                    <span className="text-xl font-black text-white">₹{startPrice}</span>
-                    <span className="text-gray-400 text-xs">/mo</span>
+                    <span className="text-slate-450 text-[9px] block uppercase tracking-widest font-bold">Starting at</span>
+                    <div className="flex items-baseline space-x-0.5">
+                      <span className="text-2xl font-black text-slate-800">₹{startPrice}</span>
+                      <span className="text-slate-500 text-xs font-semibold">/mo</span>
+                    </div>
                   </div>
                   
                   <Link
                     to={`/products/${product._id}`}
-                    className="px-5 py-2.5 bg-slate-800 hover:bg-brand-600 text-white rounded-xl text-xs font-bold transition-all duration-200"
+                    className="px-5.5 py-3 bg-slate-100 hover:bg-gradient-to-r hover:from-brand-600 hover:to-indigo-600 border border-slate-200 hover:border-transparent text-slate-700 hover:text-white rounded-xl text-xs font-bold transition-all duration-300 shadow-sm"
                   >
-                    View Options
+                    View Details
                   </Link>
                 </div>
               </div>
