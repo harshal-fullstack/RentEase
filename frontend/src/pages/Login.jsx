@@ -54,20 +54,20 @@ const Login = () => {
       {/* Decorative background glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-brand-500/5 rounded-full blur-[100px] pointer-events-none" />
       
-      <div className="glass-premium p-8 rounded-3xl w-full max-w-md relative z-10 border border-slate-250/60 shadow-2xl">
+      <div className="glass-premium p-8 rounded-3xl w-full max-w-md relative z-10 shadow-2xl">
         
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="h-14 w-14 bg-brand-50 border border-brand-200 rounded-2xl flex items-center justify-center text-brand-600 mx-auto mb-4.5 shadow-md">
+          <div className="h-14 w-14 bg-brand-500/10 border border-brand-500/25 rounded-2xl flex items-center justify-center text-brand-400 mx-auto mb-4.5 shadow-lg shadow-brand-500/5">
             <LogIn className="h-7 w-7" />
           </div>
-          <h2 className="text-3xl font-black text-slate-900 tracking-tight">Welcome Back</h2>
-          <p className="text-slate-500 text-xs mt-1.5 font-semibold">Sign in to your RentEase dashboard</p>
+          <h2 className="text-3xl font-black text-white tracking-tight">Welcome Back</h2>
+          <p className="text-slate-400 text-xs mt-1.5 font-semibold">Sign in to your RentEase dashboard</p>
         </div>
 
         {/* Error Alert */}
         {errorMsg && (
-          <div className="bg-red-50 border border-red-250 text-red-750 p-4.5 rounded-2xl text-xs flex items-start space-x-2 mb-6 shadow-sm">
+          <div className="bg-red-950/30 border border-red-500/30 text-red-400 p-4.5 rounded-2xl text-xs flex items-start space-x-2 mb-6 shadow-md">
             <AlertCircle className="h-4.5 w-4.5 shrink-0 mt-0.5" />
             <span className="font-bold leading-relaxed">{errorMsg}</span>
           </div>
@@ -76,7 +76,7 @@ const Login = () => {
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-2" htmlFor="email">
+            <label className="block text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-2" htmlFor="email">
               Email Address
             </label>
             <div className="relative">
@@ -89,13 +89,13 @@ const Login = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="user@rentease.com"
-                className="w-full glass-input rounded-xl py-3 pl-11 pr-4 text-slate-800 placeholder-slate-400 text-sm"
+                className="w-full glass-input rounded-xl py-3 pl-11 pr-4 text-white placeholder-slate-500 text-sm focus:border-brand-500/50"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-slate-505 text-[10px] font-bold uppercase tracking-wider mb-2" htmlFor="password">
+            <label className="block text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-2" htmlFor="password">
               Password
             </label>
             <div className="relative">
@@ -108,7 +108,7 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full glass-input rounded-xl py-3 pl-11 pr-4 text-slate-800 placeholder-slate-400 text-sm"
+                className="w-full glass-input rounded-xl py-3 pl-11 pr-4 text-white placeholder-slate-500 text-sm focus:border-brand-500/50"
               />
             </div>
           </div>
@@ -123,29 +123,29 @@ const Login = () => {
         </form>
 
         {/* Register Link */}
-        <p className="text-slate-500 text-xs text-center mt-6.5 font-bold">
+        <p className="text-slate-400 text-xs text-center mt-6.5 font-bold">
           Don't have an account?{' '}
-          <Link to="/register" className="text-brand-600 hover:text-brand-555 font-extrabold underline decoration-brand-500/40 transition-colors">
+          <Link to="/register" className="text-brand-400 hover:text-brand-300 font-extrabold underline decoration-brand-500/40 transition-colors">
             Sign up here
           </Link>
         </p>
 
         {/* Autofill Demo Helper */}
-        <div className="mt-8 pt-6 border-t border-slate-150">
-          <div className="flex items-center space-x-2.5 text-xs text-brand-700 bg-brand-50/60 border border-brand-200 p-3.5 rounded-xl shadow-sm">
-            <Info className="h-4 w-4 shrink-0 text-brand-600" />
+        <div className="mt-8 pt-6 border-t border-white/10">
+          <div className="flex items-center space-x-2.5 text-xs text-brand-300 bg-brand-950/20 border border-brand-500/20 p-3.5 rounded-xl shadow-md">
+            <Info className="h-4 w-4 shrink-0 text-brand-400" />
             <span className="font-bold text-[10px]">Autofill mock seed credentials for testing:</span>
           </div>
           <div className="grid grid-cols-2 gap-3 mt-3.5">
             <button
               onClick={() => handleAutofill('user')}
-              className="py-2 text-[10px] font-extrabold uppercase tracking-wider bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 border border-slate-200 rounded-xl transition-all duration-200"
+              className="py-2 text-[10px] font-extrabold uppercase tracking-wider bg-slate-800/40 hover:bg-slate-800/80 text-slate-300 hover:text-white border border-white/10 rounded-xl transition-all duration-200"
             >
               Autofill User
             </button>
             <button
               onClick={() => handleAutofill('admin')}
-              className="py-2 text-[10px] font-extrabold uppercase tracking-wider bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 border border-slate-200 rounded-xl transition-all duration-200"
+              className="py-2 text-[10px] font-extrabold uppercase tracking-wider bg-slate-800/40 hover:bg-slate-800/80 text-slate-300 hover:text-white border border-white/10 rounded-xl transition-all duration-200"
             >
               Autofill Admin
             </button>

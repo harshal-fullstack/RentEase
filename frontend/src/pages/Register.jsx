@@ -48,20 +48,20 @@ const Register = () => {
       {/* Background glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-brand-500/5 rounded-full blur-[100px] pointer-events-none" />
       
-      <div className="glass-premium p-8 rounded-3xl w-full max-w-md relative z-10 border border-slate-250/60 shadow-2xl">
+      <div className="glass-premium p-8 rounded-3xl w-full max-w-md relative z-10 shadow-2xl">
         
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="h-14 w-14 bg-brand-50 border border-brand-200 rounded-2xl flex items-center justify-center text-brand-600 mx-auto mb-4.5 shadow-md">
+          <div className="h-14 w-14 bg-brand-500/10 border border-brand-500/25 rounded-2xl flex items-center justify-center text-brand-400 mx-auto mb-4.5 shadow-lg shadow-brand-500/5">
             <UserPlus className="h-7 w-7" />
           </div>
-          <h2 className="text-3xl font-black text-slate-900 tracking-tight">Create Account</h2>
-          <p className="text-slate-500 text-xs mt-1.5 font-semibold">Get started with flexible premium rentals</p>
+          <h2 className="text-3xl font-black text-white tracking-tight">Create Account</h2>
+          <p className="text-slate-400 text-xs mt-1.5 font-semibold">Get started with flexible premium rentals</p>
         </div>
 
         {/* Error Alert */}
         {errorMsg && (
-          <div className="bg-red-50 border border-red-250 text-red-750 p-4.5 rounded-2xl text-xs flex items-start space-x-2.5 mb-6 shadow-sm">
+          <div className="bg-red-950/30 border border-red-500/30 text-red-400 p-4.5 rounded-2xl text-xs flex items-start space-x-2.5 mb-6 shadow-md">
             <AlertCircle className="h-4.5 w-4.5 shrink-0 mt-0.5" />
             <span className="font-bold leading-relaxed">{errorMsg}</span>
           </div>
@@ -70,7 +70,7 @@ const Register = () => {
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4.5">
           <div>
-            <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-2" htmlFor="name">
+            <label className="block text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-2" htmlFor="name">
               Full Name
             </label>
             <div className="relative">
@@ -83,13 +83,13 @@ const Register = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Jane Doe"
-                className="w-full glass-input rounded-xl py-3 pl-11 pr-4 text-slate-800 placeholder-slate-400 text-sm"
+                className="w-full glass-input rounded-xl py-3 pl-11 pr-4 text-white placeholder-slate-500 text-sm focus:border-brand-500/50"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-2" htmlFor="email">
+            <label className="block text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-2" htmlFor="email">
               Email Address
             </label>
             <div className="relative">
@@ -102,13 +102,13 @@ const Register = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="jane@example.com"
-                className="w-full glass-input rounded-xl py-3 pl-11 pr-4 text-slate-800 placeholder-slate-400 text-sm"
+                className="w-full glass-input rounded-xl py-3 pl-11 pr-4 text-white placeholder-slate-500 text-sm focus:border-brand-500/50"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-2" htmlFor="password">
+            <label className="block text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-2" htmlFor="password">
               Password
             </label>
             <div className="relative">
@@ -121,24 +121,24 @@ const Register = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Min 6 characters"
-                className="w-full glass-input rounded-xl py-3 pl-11 pr-4 text-slate-800 placeholder-slate-400 text-sm"
+                className="w-full glass-input rounded-xl py-3 pl-11 pr-4 text-white placeholder-slate-500 text-sm focus:border-brand-500/50"
               />
             </div>
           </div>
 
           {/* Account Type - Dev Only Helper */}
           <div>
-            <label className="block text-slate-550 text-[10px] font-bold uppercase tracking-wider mb-2" htmlFor="role">
-              Account Type <span className="text-brand-600 font-bold">(Dev Option)</span>
+            <label className="block text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-2" htmlFor="role">
+              Account Type <span className="text-brand-400 font-bold">(Dev Option)</span>
             </label>
             <select
               id="role"
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="w-full bg-white border border-slate-200 hover:border-slate-250 rounded-xl py-3 px-4 text-slate-800 text-sm focus:outline-none focus:border-brand-500 transition-colors"
+              className="w-full glass-input rounded-xl py-3 px-4 text-white text-sm focus:border-brand-500/50"
             >
-              <option value="user">Standard User (Customer)</option>
-              <option value="admin">Administrator (Manager)</option>
+              <option value="user" className="bg-[#0f172a] text-white">Standard User (Customer)</option>
+              <option value="admin" className="bg-[#0f172a] text-white">Administrator (Manager)</option>
             </select>
           </div>
 
@@ -154,9 +154,9 @@ const Register = () => {
         </form>
 
         {/* Login Link */}
-        <p className="text-slate-500 text-xs text-center mt-6.5 font-bold">
+        <p className="text-slate-400 text-xs text-center mt-6.5 font-bold">
           Already have an account?{' '}
-          <Link to="/login" className="text-brand-600 hover:text-brand-555 font-extrabold underline decoration-brand-500/40 transition-colors">
+          <Link to="/login" className="text-brand-400 hover:text-brand-300 font-extrabold underline decoration-brand-500/40 transition-colors">
             Sign in here
           </Link>
         </p>
