@@ -19,26 +19,26 @@ const Navbar = () => {
 
   return (
     <header className="sticky top-0 z-50 px-4 md:px-8 py-4 pointer-events-none">
-      <nav className="glass max-w-7xl mx-auto px-6 py-3.5 rounded-2xl md:rounded-3xl border border-slate-200/80 shadow-lg shadow-slate-200/30 flex items-center justify-between pointer-events-auto transition-all duration-300">
+      <nav className="glass max-w-7xl mx-auto px-6 py-3.5 rounded-2xl md:rounded-3xl border border-white/10 shadow-lg shadow-black/30 flex items-center justify-between pointer-events-auto transition-all duration-300">
         
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-3 group">
           <div className="p-2 bg-gradient-to-tr from-brand-600 to-indigo-500 rounded-xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg shadow-brand-500/20">
             <Package className="h-5 w-5 text-white" />
           </div>
-          <span className="text-xl font-black tracking-tight bg-gradient-to-r from-slate-900 via-brand-600 to-indigo-650 bg-clip-text text-transparent group-hover:opacity-90 transition-opacity">
+          <span className="text-xl font-black tracking-tight bg-gradient-to-r from-white via-brand-400 to-indigo-300 bg-clip-text text-transparent group-hover:opacity-90 transition-opacity">
             RentEase
           </span>
         </Link>
 
         {/* Links */}
-        <div className="hidden md:flex items-center space-x-1 lg:space-x-2 bg-slate-100/80 border border-slate-200/50 p-1 rounded-xl">
+        <div className="hidden md:flex items-center space-x-1 lg:space-x-2 bg-slate-950/40 border border-white/5 p-1 rounded-xl">
           <Link
             to="/"
             className={`px-4.5 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 ${
               isActive('/')
                 ? 'text-white bg-gradient-to-r from-brand-600 to-indigo-600 shadow-md shadow-brand-500/10'
-                : 'text-slate-650 hover:text-slate-900 hover:bg-slate-200/50'
+                : 'text-slate-300 hover:text-white hover:bg-white/5'
             }`}
           >
             Browse Catalog
@@ -50,7 +50,7 @@ const Navbar = () => {
               className={`px-4.5 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 flex items-center space-x-1.5 ${
                 isActive('/my-rentals')
                   ? 'text-white bg-gradient-to-r from-brand-600 to-indigo-600 shadow-md shadow-brand-500/10'
-                  : 'text-slate-655 hover:text-slate-900 hover:bg-slate-200/50'
+                  : 'text-slate-300 hover:text-white hover:bg-white/5'
               }`}
             >
               <CalendarRange className="h-3.5 w-3.5" />
@@ -63,8 +63,8 @@ const Navbar = () => {
               to="/admin"
               className={`px-4.5 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 flex items-center space-x-1.5 ${
                 isActive('/admin')
-                  ? 'text-brand-700 bg-brand-50 border border-brand-200 shadow'
-                  : 'text-brand-600 hover:text-brand-700 hover:bg-brand-50/50'
+                  ? 'text-brand-300 bg-brand-500/10 border border-brand-500/20 shadow'
+                  : 'text-brand-400 hover:text-brand-300 hover:bg-brand-500/5'
               }`}
             >
               <LayoutDashboard className="h-3.5 w-3.5" />
@@ -78,7 +78,7 @@ const Navbar = () => {
           {/* Cart */}
           <Link
             to="/cart"
-            className="relative p-2.5 bg-slate-105 hover:bg-slate-100 rounded-xl text-slate-600 hover:text-slate-905 border border-slate-200/60 hover:border-slate-250 transition-all duration-200"
+            className="relative p-2.5 bg-white/5 hover:bg-white/10 rounded-xl text-slate-300 hover:text-white border border-white/10 hover:border-white/20 transition-all duration-200"
           >
             <ShoppingCart className="h-4.5 w-4.5" />
             {cartCount > 0 && (
@@ -92,15 +92,15 @@ const Navbar = () => {
           {isAuthenticated ? (
             <div className="flex items-center space-x-2.5">
               <div className="hidden lg:flex flex-col text-right">
-                <span className="text-xs font-bold text-slate-800 leading-none">{user.name}</span>
-                <span className="text-[10px] text-slate-450 font-semibold tracking-wide uppercase mt-1 leading-none">{user.role}</span>
+                <span className="text-xs font-bold text-slate-200 leading-none">{user.name}</span>
+                <span className="text-[10px] text-slate-400 font-semibold tracking-wide uppercase mt-1 leading-none">{user.role}</span>
               </div>
-              <div className="p-2 bg-brand-500/5 rounded-xl border border-brand-500/10 flex items-center justify-center">
+              <div className="p-2 bg-brand-500/10 rounded-xl border border-brand-500/20 flex items-center justify-center">
                 <User className="h-3.5 w-3.5 text-brand-500" />
               </div>
               <button
                 onClick={handleLogout}
-                className="p-2.5 bg-red-50 hover:bg-red-100 text-red-550 hover:text-red-650 border border-red-200 rounded-xl transition-all duration-200 flex items-center"
+                className="p-2.5 bg-red-950/20 hover:bg-red-900/30 text-red-400 hover:text-red-300 border border-red-900/30 rounded-xl transition-all duration-200 flex items-center"
                 title="Sign Out"
               >
                 <LogOut className="h-3.5 w-3.5" />
@@ -110,7 +110,7 @@ const Navbar = () => {
             <div className="flex items-center space-x-2.5">
               <Link
                 to="/login"
-                className="px-4 py-2 text-xs font-semibold tracking-wide text-slate-600 hover:text-slate-900 transition-all duration-200"
+                className="px-4 py-2 text-xs font-semibold tracking-wide text-slate-350 hover:text-white transition-all duration-200"
               >
                 Sign In
               </Link>
