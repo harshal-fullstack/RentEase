@@ -125,7 +125,7 @@ const Login = () => {
         {/* Register Link */}
         <p className="text-slate-400 text-xs text-center mt-6.5 font-bold">
           Don't have an account?{' '}
-          <Link to="/register" className="text-brand-400 hover:text-brand-300 font-extrabold underline decoration-brand-500/40 transition-colors">
+          <Link to="/register" state={{ from: redirectPath }} className="text-brand-400 hover:text-brand-300 font-extrabold underline decoration-brand-500/40 transition-colors">
             Sign up here
           </Link>
         </p>
