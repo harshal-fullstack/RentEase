@@ -55,7 +55,7 @@ const ProductDetail = () => {
           <AlertCircle className="h-14 w-14 mx-auto mb-5 text-red-500" />
           <h2 className="font-extrabold text-xl mb-2 text-slate-800">Item Retrieval Failed</h2>
           <p className="text-xs text-red-600 mb-8">{error || 'Asset not found'}</p>
-          <Link to="/" className="px-6 py-3 bg-red-100 border border-red-200 text-red-700 rounded-xl hover:bg-red-200 text-xs font-bold uppercase tracking-wider transition-colors inline-block">
+          <Link to="/catalog" className="px-6 py-3 bg-red-100 border border-red-200 text-red-700 rounded-xl hover:bg-red-200 text-xs font-bold uppercase tracking-wider transition-colors inline-block">
             Back to Catalog
           </Link>
         </div>
@@ -92,7 +92,7 @@ const ProductDetail = () => {
       <div className="absolute top-0 right-1/4 w-[350px] h-[350px] bg-brand-500/5 rounded-full blur-[100px] pointer-events-none" />
 
       {/* Back Button */}
-      <Link to="/" className="inline-flex items-center space-x-2 text-slate-400 hover:text-white transition-colors duration-205 mb-8 font-bold text-xs uppercase tracking-wider">
+      <Link to="/catalog" className="inline-flex items-center space-x-2 text-slate-400 hover:text-white transition-colors duration-205 mb-8 font-bold text-xs uppercase tracking-wider">
         <ChevronLeft className="h-4.5 w-4.5" />
         <span>Back to Catalog</span>
       </Link>

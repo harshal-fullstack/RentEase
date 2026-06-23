@@ -66,7 +66,7 @@ function App() {
               <main>
                 <Routes>
                   {/* Public routes */}
-                  <Route path="/" element={<Catalog />} />
+                  <Route path="/" element={<Home />} />
                   <Route path="/catalog" element={<Catalog />} />
                   <Route path="/products/:id" element={<ProductDetail />} />
                   <Route path="/cart" element={<Cart />} />

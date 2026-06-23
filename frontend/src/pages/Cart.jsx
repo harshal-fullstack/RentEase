@@ -28,7 +28,7 @@ const Cart = () => {
           Browse our collections of quality home furniture and appliances to start customizing your rental space.
         </p>
         <Link
-          to="/"
+          to="/catalog"
           className="px-8 py-4 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold rounded-2xl shadow-xl shadow-brand-500/20 hover:shadow-brand-500/35 transition-all duration-200 inline-flex items-center space-x-2.5"
         >
           <span>Start Browsing</span>
