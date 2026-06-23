@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { Calendar, Truck, CreditCard, AlertCircle, ShoppingBag, ShieldCheck } from 'lucide-react';
@@ -7,7 +7,6 @@ import { Calendar, Truck, CreditCard, AlertCircle, ShoppingBag, ShieldCheck } fr
 const Checkout = () => {
   const { cart, totalMonthly, totalDeposit, clearCart } = useCart();
   const { token } = useAuth();
-  const navigate = useNavigate();
 
   // Address Details Form
   const [street, setStreet] = useState('');
