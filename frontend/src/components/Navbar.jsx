@@ -34,9 +34,9 @@ const Navbar = () => {
         {/* Links */}
         <div className="hidden md:flex items-center space-x-1 lg:space-x-2 bg-slate-950/40 border border-white/5 p-1 rounded-xl">
           <Link
-            to="/"
+            to="/catalog"
             className={`px-4.5 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 ${
-              isActive('/')
+              isActive('/catalog')
                 ? 'text-white bg-gradient-to-r from-brand-600 to-indigo-600 shadow-md shadow-brand-500/10'
                 : 'text-slate-300 hover:text-white hover:bg-white/5'
             }`}
