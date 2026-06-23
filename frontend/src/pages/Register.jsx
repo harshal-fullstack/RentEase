@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { UserPlus, User, Mail, Lock, AlertCircle } from 'lucide-react';
 
@@ -12,12 +12,15 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const { register, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const redirectPath = location.state?.from || '/';
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/');
+      navigate(redirectPath);
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, redirectPath]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,7 +40,7 @@ const Register = () => {
     setLoading(false);
 
     if (result.success) {
-      navigate('/');
+      navigate(redirectPath);
     } else {
       setErrorMsg(result.message || 'Registration failed');
     }
