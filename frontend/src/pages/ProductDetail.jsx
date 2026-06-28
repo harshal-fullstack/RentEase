@@ -86,14 +86,15 @@ const ProductDetail = () => {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12 relative animate-slide-up">
+    <div className="max-w-7xl mx-auto px-6 py-16 relative animate-slide-up">
       
       {/* Background glow */}
-      <div className="absolute top-0 right-1/4 w-[350px] h-[350px] bg-brand-500/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 right-1/4 w-[400px] h-[400px] bg-violet-500/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 left-1/4 w-[350px] h-[350px] bg-indigo-500/5 rounded-full blur-[100px] pointer-events-none" />
 
       {/* Back Button */}
-      <Link to="/catalog" className="inline-flex items-center space-x-2 text-slate-400 hover:text-white transition-colors duration-205 mb-8 font-bold text-xs uppercase tracking-wider">
-        <ChevronLeft className="h-4.5 w-4.5" />
+      <Link to="/catalog" className="inline-flex items-center space-x-2.5 text-slate-400 hover:text-white transition-colors duration-250 mb-10 font-extrabold text-xs uppercase tracking-widest group">
+        <ChevronLeft className="h-4.5 w-4.5 group-hover:-translate-x-1 transition-transform" />
         <span>Back to Catalog</span>
       </Link>
 
@@ -101,55 +102,55 @@ const ProductDetail = () => {
         
         {/* Left Column: Product Image & Description */}
         <div className="lg:col-span-7 space-y-10">
-          <div className="bg-[#131b2e]/60 border border-white/10 rounded-3xl overflow-hidden relative aspect-[4/3] shadow-md">
+          <div className="bg-[#111827]/40 border border-white/10 rounded-3xl overflow-hidden relative aspect-[4/3] shadow-2xl">
             <img
               src={product.imageUrl}
               alt={product.name}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover transform hover:scale-[1.01] transition-transform duration-500"
             />
-            <span className="absolute top-4 left-4 bg-brand-500/10 border border-brand-500/20 text-brand-350 text-[10px] font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-lg shadow-md backdrop-blur-md">
+            <span className="absolute top-5 left-5 bg-[#0f172a]/70 border border-white/10 text-violet-300 text-[10px] font-extrabold uppercase tracking-widest px-4 py-2 rounded-xl shadow-md backdrop-blur-md">
               {product.category}
             </span>
           </div>
 
-          <div className="bg-[#131b2e]/60 border border-white/10 p-8 rounded-3xl space-y-4">
+          <div className="bg-[#111827]/30 border border-white/10 p-8 md:p-10 rounded-3xl space-y-5 shadow-lg">
             <h3 className="text-xl font-extrabold text-white">Item Details & Dimensions</h3>
-            <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-line">{product.description}</p>
+            <p className="text-slate-350 text-sm leading-relaxed whitespace-pre-line font-medium">{product.description}</p>
           </div>
         </div>
 
         {/* Right Column: Order Selection Panel */}
         <div className="lg:col-span-5">
-          <div className="glass-premium p-8 rounded-3xl border border-white/10 shadow-xl sticky top-28">
+          <div className="bg-gradient-to-b from-[#111827]/60 to-[#0f172a]/80 p-8 md:p-9 rounded-3xl border border-white/10 shadow-2xl sticky top-28">
             
             {/* Header info */}
-            <div className="mb-8">
-              <span className="text-[10px] text-brand-400 font-extrabold uppercase tracking-widest">{product.subCategory}</span>
-              <h1 className="text-3xl font-black text-white mt-1.5 mb-3">{product.name}</h1>
+            <div className="mb-10">
+              <span className="text-[10px] text-violet-400 font-extrabold uppercase tracking-widest">{product.subCategory}</span>
+              <h1 className="text-3xl font-black text-white mt-2 mb-4 leading-tight">{product.name}</h1>
               
-              <div className="flex flex-wrap items-center gap-3 text-xs font-semibold">
+              <div className="flex flex-wrap items-center gap-3.5 text-xs font-semibold">
                 {product.inventory === 0 ? (
-                  <span className="bg-red-950/80 border border-red-900/30 text-red-400 font-bold px-2.5 py-1 rounded-md uppercase tracking-wider text-[9px]">
+                  <span className="bg-red-950/80 border border-red-900/30 text-red-400 font-extrabold px-3 py-1 rounded-lg uppercase tracking-wider text-[9px]">
                     Out of Stock
                   </span>
                 ) : (
-                  <span className="bg-emerald-950/80 border border-emerald-900/30 text-emerald-400 font-bold px-2.5 py-1 rounded-md uppercase tracking-wider text-[9px]">
+                  <span className="bg-emerald-950/80 border border-emerald-900/30 text-emerald-450 font-extrabold px-3 py-1 rounded-lg uppercase tracking-wider text-[9px]">
                     In Stock ({product.inventory} available)
                   </span>
                 )}
-                <span className="text-slate-700">•</span>
-                <span className="text-slate-400">Refundable Deposit: ₹{product.deposit}</span>
+                <span className="text-slate-800">•</span>
+                <span className="text-slate-400 font-medium">Refundable Deposit: ₹{product.deposit}</span>
               </div>
             </div>
 
             {/* Select Tenure Plan */}
-            <div className="mb-8">
-              <label className="block text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-4 flex items-center">
-                <Calendar className="h-4 w-4 mr-2 text-brand-400" />
+            <div className="mb-10">
+              <label className="block text-slate-400 text-[10px] font-extrabold uppercase tracking-widest mb-4 flex items-center">
+                <Calendar className="h-4 w-4 mr-2.5 text-violet-400" />
                 Select Rental Plan (Tenure)
               </label>
               
-              <div className="grid grid-cols-2 gap-3.5">
+              <div className="grid grid-cols-2 gap-4">
                 {tenureLabels.map((plan) => {
                   const rate = product.pricing[plan.value];
                   const active = selectedTenure === plan.value;
@@ -157,25 +158,25 @@ const ProductDetail = () => {
                     <button
                       key={plan.value}
                       onClick={() => setSelectedTenure(plan.value)}
-                      className={`p-4.5 rounded-2xl border text-left flex flex-col justify-between transition-all duration-300 ${
+                      className={`p-4.5 rounded-2xl border text-left flex flex-col justify-between transition-all duration-350 hover:scale-[1.02] ${
                         active
-                          ? 'bg-brand-500/10 border-brand-500 text-brand-300 shadow-md font-bold'
-                          : 'bg-slate-900/40 border-white/5 text-slate-400 hover:text-white hover:border-white/10'
+                          ? 'bg-violet-500/10 border-violet-500 text-violet-300 shadow-lg shadow-violet-500/5 font-extrabold'
+                          : 'bg-slate-950/65 border-white/5 text-slate-400 hover:text-white hover:border-white/10'
                       }`}
                     >
-                      <div className="flex items-center justify-between w-full mb-2">
-                        <span className="text-xs font-extrabold uppercase tracking-wide">{plan.value} {plan.value === 1 ? 'Month' : 'Months'}</span>
-                        <span className={`text-[8px] px-1.5 py-0.5 rounded font-black uppercase tracking-wider ${
+                      <div className="flex items-center justify-between w-full mb-3">
+                        <span className="text-[10px] font-extrabold uppercase tracking-widest">{plan.value} {plan.value === 1 ? 'Month' : 'Months'}</span>
+                        <span className={`text-[8px] px-2 py-0.5 rounded-md font-black uppercase tracking-wider ${
                           active
-                            ? 'bg-brand-500 text-white shadow'
-                            : 'bg-slate-950/60 text-slate-400 border border-white/10'
+                            ? 'bg-violet-600 text-white shadow'
+                            : 'bg-slate-900 text-slate-400 border border-white/10'
                         }`}>
                           {plan.discount}
                         </span>
                       </div>
                       <div className="flex items-baseline">
-                        <span className="text-xl font-black text-white">₹{rate}</span>
-                        <span className="text-[10px] text-slate-500 font-bold tracking-wider uppercase ml-1">/mo</span>
+                        <span className="text-2xl font-black text-white">₹{rate}</span>
+                        <span className="text-[9px] text-slate-500 font-bold tracking-wider uppercase ml-1.5">/mo</span>
                       </div>
                     </button>
                   );
@@ -184,24 +185,24 @@ const ProductDetail = () => {
             </div>
 
             {/* Quantity Selector */}
-            <div className="mb-8 flex items-center justify-between border-t border-white/5 pt-6">
-              <label className="text-slate-400 text-[10px] font-bold uppercase tracking-wider" htmlFor="quantity">
+            <div className="mb-10 flex items-center justify-between border-t border-white/5 pt-8">
+              <label className="text-slate-400 text-[10px] font-extrabold uppercase tracking-widest" htmlFor="quantity">
                 Quantity
               </label>
-              <div className="flex items-center bg-slate-900/80 border border-white/10 rounded-xl p-1 shadow-inner">
+              <div className="flex items-center bg-slate-950/80 border border-white/15 rounded-2xl p-1 shadow-inner">
                 <button
                   type="button"
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="h-8.5 w-8.5 text-slate-400 hover:text-white flex items-center justify-center font-bold text-base transition-colors"
+                  className="h-9 w-9 text-slate-450 hover:text-white flex items-center justify-center font-bold text-lg transition-colors"
                   disabled={product.inventory <= 0}
                 >
                   -
                 </button>
-                <span className="w-12 text-center text-white text-xs font-bold">{quantity}</span>
+                <span className="w-12 text-center text-white text-xs font-extrabold">{quantity}</span>
                 <button
                   type="button"
                   onClick={() => setQuantity(Math.min(product.inventory, quantity + 1))}
-                  className="h-8.5 w-8.5 text-slate-400 hover:text-white flex items-center justify-center font-bold text-base transition-colors"
+                  className="h-9 w-9 text-slate-450 hover:text-white flex items-center justify-center font-bold text-lg transition-colors"
                   disabled={product.inventory <= 0 || quantity >= product.inventory}
                 >
                   +
@@ -210,7 +211,7 @@ const ProductDetail = () => {
             </div>
 
             {/* Price Calculations breakdown */}
-            <div className="bg-slate-950/40 border border-white/5 p-5.5 rounded-2xl mb-8 space-y-4">
+            <div className="bg-slate-950/60 border border-white/5 p-6 rounded-2xl mb-10 space-y-4 shadow-inner">
               <div className="flex justify-between text-xs text-slate-400 font-bold">
                 <span>Monthly Rent ({selectedTenure} mo plan)</span>
                 <span className="text-white">₹{monthlyPrice} × {quantity} = ₹{subtotalMonthly}</span>
@@ -225,22 +226,22 @@ const ProductDetail = () => {
               </div>
 
               <div className="border-t border-white/5 pt-4 flex justify-between items-center">
-                <span className="text-xs font-bold text-slate-200 uppercase tracking-wider">Total Due Now</span>
+                <span className="text-[10px] font-extrabold text-slate-200 uppercase tracking-widest">Total Due Now</span>
                 <div className="text-right">
-                  <span className="text-2xl font-black text-brand-400">₹{dueNow}</span>
-                  <span className="text-[9px] text-slate-500 block font-bold mt-1">Includes deposit + 1st month rent</span>
+                  <span className="text-2xl font-black text-violet-400">₹{dueNow}</span>
+                  <span className="text-[8px] text-slate-500 block font-bold mt-1">INCLUDES DEPOSIT + 1ST MONTH</span>
                 </div>
               </div>
             </div>
 
             {/* Added to Cart Alert Box */}
             {addedMsg && (
-              <div className="bg-emerald-955/20 border border-emerald-900/30 text-emerald-400 p-4.5 rounded-2xl text-xs flex items-center justify-between mb-5 animate-pulse-glow shadow-sm">
-                <span className="font-bold flex items-center tracking-wide">
-                  <ShieldCheck className="h-4.5 w-4.5 mr-2 text-emerald-600 shrink-0" />
+              <div className="bg-emerald-950/20 border border-emerald-900/30 text-emerald-400 p-5 rounded-2xl text-xs flex items-center justify-between mb-6 animate-pulse-glow shadow-sm">
+                <span className="font-extrabold flex items-center tracking-wide">
+                  <ShieldCheck className="h-4.5 w-4.5 mr-2.5 text-emerald-500 shrink-0" />
                   Item successfully added to cart!
                 </span>
-                <Link to="/cart" className="underline font-black hover:text-emerald-300 tracking-wide">View Cart</Link>
+                <Link to="/cart" className="underline font-black hover:text-emerald-305 tracking-wide">View Cart</Link>
               </div>
             )}
 
@@ -248,15 +249,15 @@ const ProductDetail = () => {
             <button
               onClick={handleAddToCart}
               disabled={product.inventory <= 0}
-              className="w-full bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold rounded-2xl py-4 flex items-center justify-center space-x-2.5 shadow-xl shadow-brand-500/20 hover:shadow-brand-500/35 transform hover:-translate-y-0.5 active:scale-95 transition-all duration-300 disabled:opacity-40 disabled:transform-none disabled:shadow-none"
+              className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-extrabold rounded-2xl py-4 flex items-center justify-center space-x-2.5 shadow-2xl shadow-violet-600/25 hover:shadow-violet-600/40 transform hover:-translate-y-0.5 active:scale-95 transition-all duration-300 disabled:opacity-40 disabled:transform-none disabled:shadow-none"
             >
               <ShoppingCart className="h-5 w-5" />
               <span>Add to Cart</span>
             </button>
             
-            <div className="mt-5 flex items-center justify-center text-[10px] text-slate-500 font-bold uppercase tracking-widest space-x-1.5">
-              <ShieldCheck className="h-4.5 w-4.5 text-emerald-550" />
-              <span>Extend/cancel lease at any time</span>
+            <div className="mt-6 flex items-center justify-center text-[9px] text-slate-500 font-extrabold uppercase tracking-widest space-x-2">
+              <ShieldCheck className="h-4 w-4 text-emerald-500" />
+              <span>Extend or cancel lease at any time</span>
             </div>
 
           </div>
