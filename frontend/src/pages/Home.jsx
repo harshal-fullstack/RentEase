@@ -1,208 +1,265 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Sofa, Refrigerator, Calendar, ArrowRight, ShieldCheck, Truck, RefreshCw, Zap } from 'lucide-react';
+import { Sofa, Refrigerator, ArrowRight, Zap, Check, TrendingUp, Shield, Truck } from 'lucide-react';
 
 const Home = () => {
+  const [featuredProduct, setFeaturedProduct] = useState(null);
+
+  useEffect(() => {
+    const fetchFeaturedProduct = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/products');
+        const data = await res.json();
+        if (data.success && data.products && data.products.length > 0) {
+          // Find the Modern 3-Seater Fabric Sofa or default to the first product
+          const sofa = data.products.find(
+            (p) => p.category === 'Furniture' && p.subCategory === 'Sofa'
+          ) || data.products[0];
+          setFeaturedProduct(sofa);
+        }
+      } catch (err) {
+        console.error('Error fetching products for Home:', err);
+      }
+    };
+    fetchFeaturedProduct();
+  }, []);
+
   return (
-    <div className="relative min-h-screen overflow-hidden pb-20">
-      
-      {/* Premium glowing background blobs */}
-      <div className="absolute top-[-10%] left-[5%] w-[600px] h-[600px] rounded-full bg-violet-600/10 blur-[150px] animate-pulse-glow pointer-events-none" />
-      <div className="absolute top-[40%] right-[-5%] w-[600px] h-[600px] rounded-full bg-indigo-600/10 blur-[150px] animate-pulse-glow pointer-events-none" />
-      <div className="absolute bottom-[5%] left-[10%] w-[500px] h-[500px] rounded-full bg-cyan-500/5 blur-[130px] pointer-events-none" />
-
+    <div className="bg-gradient-to-br from-orange-50 via-amber-50 to-white">
       {/* Hero Section */}
-      <section className="max-w-7xl mx-auto px-6 pt-20 md:pt-36 pb-24 text-center relative z-10 animate-slide-up">
-        
-        {/* Animated Badge */}
-        <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-violet-500/10 to-indigo-500/10 border border-violet-500/25 px-5 py-2 rounded-full text-violet-300 text-[10px] font-extrabold uppercase tracking-widest mb-10 shadow-lg shadow-violet-950/20">
-          <Zap className="h-3.5 w-3.5 text-cyan-400 animate-pulse" />
-          <span>Flexibility Redefined — Active in Major Metros</span>
-        </div>
-        
-        {/* Main Hero Header */}
-        <h1 className="text-4xl sm:text-6xl md:text-8xl font-black tracking-tight mb-8 max-w-5xl mx-auto leading-[1.05] text-white">
-          Live Better Now.<br />
-          <span className="bg-gradient-to-r from-violet-400 via-indigo-300 to-cyan-400 bg-clip-text text-transparent">
-            Rent Premium Assets
-          </span>
-          <br />on Your Own Terms.
-        </h1>
-        
-        {/* Sub-text */}
-        <p className="text-slate-400 text-base md:text-xl max-w-3xl mx-auto mb-14 leading-relaxed font-medium">
-          Furnish your home or office with high-end furniture and top-tier appliances. Cancel, extend, or return items whenever you want. Free delivery and setup included.
-        </p>
+      <section className="max-w-7xl mx-auto px-6 py-24 md:py-32">
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          {/* Left Content */}
+          <div className="animate-fade-in-up">
+            <div className="inline-flex items-center space-x-2 bg-cyan-100 text-cyan-700 px-4 py-2 rounded-full text-sm font-semibold mb-6">
+              <Zap className="w-4 h-4" />
+              <span>New Way to Furnish</span>
+            </div>
+            
+            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight mb-6">
+              Premium Furniture,
+              <span className="text-gradient"> Zero Commitment</span>
+            </h1>
+            
+            <p className="text-lg text-gray-600 mb-8 leading-relaxed max-w-lg">
+              Rent premium furniture and appliances from top brands. Cancel, extend, or upgrade your lease anytime. No long-term contracts, no compromise on quality.
+            </p>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-5 max-w-md mx-auto sm:max-w-none">
-          <Link
-            to="/catalog"
-            className="w-full sm:w-auto px-9 py-4.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-extrabold rounded-2xl shadow-2xl shadow-violet-600/30 hover:shadow-violet-600/40 flex items-center justify-center space-x-2.5 transform hover:-translate-y-1 active:scale-95 transition-all duration-300 text-sm"
-          >
-            <span>Explore Catalog</span>
-            <ArrowRight className="h-4.5 w-4.5" />
-          </Link>
-          <a
-            href="#how-it-works"
-            className="w-full sm:w-auto px-9 py-4.5 bg-[#0f172a]/45 hover:bg-[#0f172a]/80 text-slate-300 hover:text-white border border-white/10 hover:border-white/20 font-extrabold rounded-2xl transition-all duration-300 flex items-center justify-center text-sm shadow-md"
-          >
-            Learn How It Works
-          </a>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link to="/catalog" className="btn btn-primary btn-lg">
+                <span>Browse Now</span>
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+              <a href="#how-it-works" className="btn btn-ghost btn-lg">
+                Learn More
+              </a>
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-6 mt-12 pt-12 border-t border-gray-200">
+              <div>
+                <div className="text-3xl font-bold text-cyan-600">10K+</div>
+                <p className="text-sm text-gray-600 mt-1">Happy Renters</p>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-cyan-600">500+</div>
+                <p className="text-sm text-gray-600 mt-1">Products</p>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-cyan-600">50+</div>
+                <p className="text-sm text-gray-600 mt-1">Cities</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Visual - Large Product Card */}
+          <div className="animate-slide-in">
+            <div className="card-premium p-8 relative overflow-hidden h-96 md:h-full md:min-h-96 flex items-end">
+              {/* Gradient background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 via-teal-500/10 to-transparent"></div>
+              
+              {/* Decorative elements */}
+              <div className="absolute top-10 right-10 w-20 h-20 bg-cyan-300 rounded-full blur-3xl opacity-30"></div>
+              <div className="absolute bottom-10 left-10 w-32 h-32 bg-amber-300 rounded-full blur-3xl opacity-20"></div>
+
+              {/* Content */}
+              <div className="relative z-10">
+                <div className="badge badge-primary mb-4">Featured Offer</div>
+                <h3 className="text-3xl font-bold text-gray-900 mb-2">Modern Sofa Set</h3>
+                <p className="text-gray-600 mb-6">Premium comfort meets sleek design</p>
+                <div className="flex items-center space-x-6">
+                  <div>
+                    <p className="text-sm text-gray-500">Starting at</p>
+                    <p className="text-2xl font-bold text-cyan-600">₹2,499</p>
+                  </div>
+                  <Link to={featuredProduct ? `/products/${featuredProduct._id}` : '/catalog'} className="ml-auto btn btn-primary btn-sm">
+                    View
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Categories Grid */}
-      <section className="max-w-7xl mx-auto px-6 py-20 relative z-10 border-t border-white/5">
-        <div className="text-center mb-20">
-          <span className="text-[10px] text-violet-400 font-extrabold uppercase tracking-widest">Collections</span>
-          <h2 className="text-3xl md:text-5xl font-black text-white mt-2 mb-4">Select by Category</h2>
-          <p className="text-slate-400 text-sm max-w-md mx-auto font-medium">Pick a class of premium assets curated specifically for modern lifestyles.</p>
+      {/* Categories Section */}
+      <section className="max-w-7xl mx-auto px-6 py-20">
+        <div className="section-header">
+          <h2>Shop by Category</h2>
+          <p>Explore our curated collection of premium furniture and appliances</p>
         </div>
-        
-        <div className="grid md:grid-cols-2 gap-10">
-          
-          {/* Furniture Category Card */}
+
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* Furniture */}
           <Link
             to="/catalog?category=Furniture"
-            className="premium-card-hover bg-[#0f172a]/40 border border-white/10 p-10 md:p-12 rounded-3xl group flex flex-col justify-between"
+            className="card-premium p-8 group cursor-pointer h-64 flex flex-col justify-between relative overflow-hidden"
           >
-            <div>
-              <div className="h-16 w-16 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-450 group-hover:scale-115 group-hover:bg-violet-500/20 transition-all duration-350 mb-10 shadow-inner">
-                <Sofa className="h-8 w-8" />
+            <div className="absolute inset-0 bg-gradient-to-br from-cyan-100 to-transparent group-hover:from-cyan-200 transition-all duration-300"></div>
+            <div className="relative z-10">
+              <div className="w-12 h-12 bg-cyan-600 rounded-lg flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform">
+                <Sofa className="w-6 h-6" />
               </div>
-              <h3 className="text-3xl font-extrabold text-white mb-4">Premium Furniture</h3>
-              <p className="text-slate-400 text-sm leading-relaxed mb-10 font-medium">
-                Beds, sofas, dining tables, chairs, and study setups. Handcrafted with high-density padding and solid materials.
-              </p>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Premium Furniture</h3>
+              <p className="text-gray-600 text-sm">Beds, sofas, dining sets, and more</p>
             </div>
-            <span className="text-violet-400 text-xs font-bold uppercase tracking-wider flex items-center group-hover:translate-x-2 transition-transform duration-300">
-              Browse Furniture <ArrowRight className="h-4.5 w-4.5 ml-2 text-violet-500" />
-            </span>
+            <div className="relative z-10 text-cyan-600 font-semibold flex items-center group-hover:translate-x-2 transition-transform">
+              Explore <ArrowRight className="w-4 h-4 ml-2" />
+            </div>
           </Link>
 
-          {/* Appliances Category Card */}
+          {/* Appliances */}
           <Link
             to="/catalog?category=Appliances"
-            className="premium-card-hover bg-[#0f172a]/40 border border-white/10 p-10 md:p-12 rounded-3xl group flex flex-col justify-between"
+            className="card-premium p-8 group cursor-pointer h-64 flex flex-col justify-between relative overflow-hidden"
           >
-            <div>
-              <div className="h-16 w-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-450 group-hover:scale-115 group-hover:bg-indigo-500/20 transition-all duration-350 mb-10 shadow-inner">
-                <Refrigerator className="h-8 w-8" />
+            <div className="absolute inset-0 bg-gradient-to-br from-amber-100 to-transparent group-hover:from-amber-200 transition-all duration-300"></div>
+            <div className="relative z-10">
+              <div className="w-12 h-12 bg-amber-600 rounded-lg flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform">
+                <Refrigerator className="w-6 h-6" />
               </div>
-              <h3 className="text-3xl font-extrabold text-white mb-4">Smart Appliances</h3>
-              <p className="text-slate-400 text-sm leading-relaxed mb-10 font-medium">
-                Energy-efficient refrigerators, 4K Smart TVs, fully automatic washing machines, microwave ovens, and air coolers.
-              </p>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Smart Appliances</h3>
+              <p className="text-gray-600 text-sm">Refrigerators, TVs, washing machines, and more</p>
             </div>
-            <span className="text-indigo-400 text-xs font-bold uppercase tracking-wider flex items-center group-hover:translate-x-2 transition-transform duration-300">
-              Browse Appliances <ArrowRight className="h-4.5 w-4.5 ml-2 text-indigo-500" />
-            </span>
+            <div className="relative z-10 text-amber-600 font-semibold flex items-center group-hover:translate-x-2 transition-transform">
+              Explore <ArrowRight className="w-4 h-4 ml-2" />
+            </div>
           </Link>
-
         </div>
       </section>
 
-      {/* How it Works Section */}
-      <section id="how-it-works" className="max-w-7xl mx-auto px-6 py-28 relative z-10 border-t border-white/5">
-        <div className="text-center mb-24">
-          <span className="text-[10px] text-violet-400 font-extrabold uppercase tracking-widest">Seamless Leases</span>
-          <h2 className="text-3xl md:text-5xl font-black text-white mt-2 mb-4">How RentEase Works</h2>
-          <p className="text-slate-400 max-w-xl mx-auto text-sm leading-relaxed font-medium">
-            A modern, digital rental experience mapped in four simple steps to fit your flexible lifestyle.
-          </p>
+      {/* How It Works */}
+      <section id="how-it-works" className="max-w-7xl mx-auto px-6 py-20 border-t border-gray-200">
+        <div className="section-header">
+          <h2>How RentEase Works</h2>
+          <p>Four simple steps to get premium items delivered to your home</p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-4 gap-8">
+          {[
+            {
+              num: '01',
+              title: 'Browse',
+              desc: 'Explore thousands of premium furniture and appliances',
+              icon: '🔍',
+            },
+            {
+              num: '02',
+              title: 'Select Plan',
+              desc: 'Choose your rental tenure: 1, 3, 6, or 12 months',
+              icon: '📅',
+            },
+            {
+              num: '03',
+              title: 'Checkout',
+              desc: 'Pick delivery date and complete your lease',
+              icon: '🚚',
+            },
+            {
+              num: '04',
+              title: 'Enjoy',
+              desc: 'Get free delivery & setup. Extend or return anytime',
+              icon: '✨',
+            },
+          ].map((step, idx) => (
+            <div key={idx} className="card p-6 relative">
+              <div className="text-gray-200 font-black text-5xl mb-4 absolute top-6 right-6">
+                {step.num}
+              </div>
+              <div className="text-4xl mb-4">{step.icon}</div>
+              <h4 className="text-lg font-bold text-gray-900 mb-2">{step.title}</h4>
+              <p className="text-gray-600 text-sm">{step.desc}</p>
+              
+              {idx < 3 && (
+                <div className="hidden md:block absolute -right-4 top-1/2 -translate-y-1/2 text-gray-300">
+                  <ArrowRight className="w-8 h-8" />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Why RentEase */}
+      <section className="max-w-7xl mx-auto px-6 py-20">
+        <div className="section-header">
+          <h2>Why Choose RentEase?</h2>
+          <p>We make renting premium items simple, affordable, and flexible</p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {[
+            {
+              icon: <Shield className="w-8 h-8" />,
+              title: 'Fully Refundable Deposit',
+              desc: 'Security deposits are returned 100% when you return items in good condition.',
+              color: 'text-green-600',
+              bg: 'bg-green-50',
+            },
+            {
+              icon: <Truck className="w-8 h-8" />,
+              title: 'Free Delivery & Setup',
+              desc: 'We deliver and install everything. No hassle, no heavy lifting required.',
+              color: 'text-cyan-600',
+              bg: 'bg-cyan-50',
+            },
+            {
+              icon: <TrendingUp className="w-8 h-8" />,
+              title: 'Flexible Anytime',
+              desc: 'Extend your lease, upgrade to premium items, or cancel & return anytime.',
+              color: 'text-amber-600',
+              bg: 'bg-amber-50',
+            },
+          ].map((benefit, idx) => (
+            <div key={idx} className={`card p-8 ${benefit.bg}`}>
+              <div className={`w-12 h-12 rounded-lg ${benefit.bg} flex items-center justify-center ${benefit.color} mb-4 border border-current border-opacity-20`}>
+                {benefit.icon}
+              </div>
+              <h4 className="text-lg font-bold text-gray-900 mb-2">{benefit.title}</h4>
+              <p className="text-gray-600 text-sm">{benefit.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="max-w-7xl mx-auto px-6 py-20">
+        <div className="card-premium p-12 md:p-16 text-center relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-amber-500/10"></div>
+          <div className="absolute top-10 right-10 w-40 h-40 bg-cyan-300 rounded-full blur-3xl opacity-20"></div>
           
-          {/* Step 1 */}
-          <div className="bg-[#0f172a]/30 p-8 rounded-3xl relative border border-white/5 hover:border-violet-500/20 transition-all duration-350 group shadow-md">
-            <div className="text-violet-500/5 font-black text-8xl absolute top-4 right-4 pointer-events-none select-none group-hover:scale-110 transition-transform duration-300">01</div>
-            <div className="h-12 w-12 bg-violet-500/10 border border-violet-500/25 rounded-xl flex items-center justify-center text-violet-400 mb-8 relative z-10">
-              <Sofa className="h-5 w-5" />
-            </div>
-            <h4 className="text-lg font-bold text-white mb-3 relative z-10">Browse Products</h4>
-            <p className="text-slate-400 text-xs leading-relaxed relative z-10 font-medium">
-              Explore high-quality beds, sofas, refrigerators, smart TVs, and washing machines.
+          <div className="relative z-10">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Ready to Transform Your Space?</h2>
+            <p className="text-gray-600 text-lg mb-8 max-w-2xl mx-auto">
+              Join thousands of happy renters who've upgraded their lifestyle with RentEase. No long-term contracts. Pure flexibility.
             </p>
+            <Link to="/catalog" className="btn btn-primary btn-lg inline-flex">
+              <span>Start Shopping</span>
+              <ArrowRight className="w-5 h-5" />
+            </Link>
           </div>
-
-          {/* Step 2 */}
-          <div className="bg-[#0f172a]/30 p-8 rounded-3xl relative border border-white/5 hover:border-indigo-500/20 transition-all duration-350 group shadow-md">
-            <div className="text-indigo-500/5 font-black text-8xl absolute top-4 right-4 pointer-events-none select-none group-hover:scale-110 transition-transform duration-300">02</div>
-            <div className="h-12 w-12 bg-indigo-500/10 border border-indigo-500/25 rounded-xl flex items-center justify-center text-indigo-400 mb-8 relative z-10">
-              <Calendar className="h-5 w-5" />
-            </div>
-            <h4 className="text-lg font-bold text-white mb-3 relative z-10">Choose a Plan</h4>
-            <p className="text-slate-400 text-xs leading-relaxed relative z-10 font-medium">
-              Select a rental tenure of 1, 3, 6, or 12 months. The monthly rate goes down for longer leases.
-            </p>
-          </div>
-
-          {/* Step 3 */}
-          <div className="bg-[#0f172a]/30 p-8 rounded-3xl relative border border-white/5 hover:border-cyan-500/20 transition-all duration-350 group shadow-md">
-            <div className="text-cyan-500/5 font-black text-8xl absolute top-4 right-4 pointer-events-none select-none group-hover:scale-110 transition-transform duration-300">03</div>
-            <div className="h-12 w-12 bg-cyan-500/10 border border-cyan-500/25 rounded-xl flex items-center justify-center text-cyan-455 mb-8 relative z-10">
-              <Truck className="h-5 w-5" />
-            </div>
-            <h4 className="text-lg font-bold text-white mb-3 relative z-10">Schedule Delivery</h4>
-            <p className="text-slate-400 text-xs leading-relaxed relative z-10 font-medium">
-              Add products to your cart, schedule a delivery date/slot, and complete the order. We deliver and install.
-            </p>
-          </div>
-
-          {/* Step 4 */}
-          <div className="bg-[#0f172a]/30 p-8 rounded-3xl relative border border-white/5 hover:border-pink-500/20 transition-all duration-350 group shadow-md">
-            <div className="text-pink-500/5 font-black text-8xl absolute top-4 right-4 pointer-events-none select-none group-hover:scale-110 transition-transform duration-300">04</div>
-            <div className="h-12 w-12 bg-pink-500/10 border border-pink-500/25 rounded-xl flex items-center justify-center text-pink-400 mb-8 relative z-10">
-              <RefreshCw className="h-5 w-5" />
-            </div>
-            <h4 className="text-lg font-bold text-white mb-3 relative z-10">Flex & Service</h4>
-            <p className="text-slate-400 text-xs leading-relaxed relative z-10 font-medium">
-              Track active leases, extend terms, request returns, or raise maintenance tickets instantly.
-            </p>
-          </div>
-
         </div>
       </section>
-
-      {/* Security & Support Badging */}
-      <section className="max-w-7xl mx-auto px-6 py-6 relative z-10">
-        <div className="bg-gradient-to-tr from-[#0f172a]/80 to-[#0b111e]/90 p-10 md:p-14 rounded-3xl border border-white/10 grid md:grid-cols-3 gap-12 shadow-2xl">
-          
-          <div className="flex flex-col items-center md:items-start text-center md:text-left">
-            <div className="p-3.5 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-emerald-400 mb-5 shadow-sm">
-              <ShieldCheck className="h-7 w-7" />
-            </div>
-            <h4 className="text-lg font-extrabold text-white mb-2.5">Fully Refundable Deposit</h4>
-            <p className="text-slate-400 text-xs leading-relaxed font-medium">
-              Security deposits are locked safely and refunded 100% upon asset return pickup and approval.
-            </p>
-          </div>
-
-          <div className="flex flex-col items-center md:items-start text-center md:text-left border-y md:border-y-0 md:border-x border-white/5 py-10 md:py-0 md:px-12">
-            <div className="p-3.5 bg-violet-500/10 border border-violet-500/20 rounded-2xl text-violet-400 mb-5 shadow-sm">
-              <Truck className="h-7 w-7" />
-            </div>
-            <h4 className="text-lg font-extrabold text-white mb-2.5">Complimentary Assembly</h4>
-            <p className="text-slate-400 text-xs leading-relaxed font-medium">
-              Our team delivers, places, and mounts everything in your room with zero physical effort required from you.
-            </p>
-          </div>
-
-          <div className="flex flex-col items-center md:items-start text-center md:text-left">
-            <div className="p-3.5 bg-indigo-500/10 border border-indigo-500/20 rounded-2xl text-indigo-400 mb-5 shadow-sm">
-              <RefreshCw className="h-7 w-7" />
-            </div>
-            <h4 className="text-lg font-extrabold text-white mb-2.5">24-Hour Service Guarantee</h4>
-            <p className="text-slate-400 text-xs leading-relaxed font-medium">
-              Raise a ticket on your dashboard. An engineer visits your house within 24 hours to replace or service your items.
-            </p>
-          </div>
-
-        </div>
-      </section>
-
     </div>
   );
 };
