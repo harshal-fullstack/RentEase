@@ -1,21 +1,19 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import { Calendar, Truck, CreditCard, AlertCircle, ShoppingBag, ShieldCheck } from 'lucide-react';
+import { Calendar, Truck, CreditCard, AlertCircle, ShoppingBag, CheckCircle2 } from 'lucide-react';
 
 const Checkout = () => {
   const { cart, totalMonthly, totalDeposit, clearCart } = useCart();
   const { token } = useAuth();
+  const navigate = useNavigate();
 
-  // Address Details Form
   const [street, setStreet] = useState('');
-  const [city, setCity] = useState('New York'); // default city
+  const [city, setCity] = useState('New York');
   const [state, setState] = useState('');
   const [zipCode, setZipCode] = useState('');
 
-  // Delivery Scheduling Form
-  // Set minimum date to tomorrow
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   const minDateString = tomorrow.toISOString().split('T')[0];
@@ -23,18 +21,21 @@ const Checkout = () => {
   const [deliveryDate, setDeliveryDate] = useState(minDateString);
   const [deliverySlot, setDeliverySlot] = useState('09:00 AM - 01:00 PM');
 
-  // Request status states
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [success, setSuccess] = useState(false);
 
   if (cart.length === 0 && !success) {
     return (
-      <div className="max-w-7xl mx-auto px-6 py-28 text-center animate-slide-up">
-        <ShoppingBag className="h-16 w-16 text-slate-500 mx-auto mb-6" />
-        <h2 className="text-2xl font-black text-white mb-2">Checkout is Empty</h2>
-        <p className="text-slate-400 text-sm mb-8 font-semibold">You have no items in your cart to schedule checkout.</p>
-        <Link to="/" className="text-brand-400 hover:text-brand-300 font-bold uppercase tracking-wider text-xs underline decoration-brand-500/50">Browse Catalog</Link>
+      <div className="bg-gradient-to-br from-orange-50 via-amber-50 to-white min-h-screen flex items-center">
+        <div className="max-w-md mx-auto text-center px-6">
+          <ShoppingBag className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Checkout is Empty</h2>
+          <p className="text-gray-600 mb-6">Add items to your cart to proceed</p>
+          <Link to="/catalog" className="btn btn-primary inline-flex">
+            Browse Catalog
+          </Link>
+        </div>
       </div>
     );
   }
@@ -92,229 +93,260 @@ const Checkout = () => {
 
   if (success) {
     return (
-      <div className="max-w-md mx-auto px-6 py-28 text-center animate-slide-up relative">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none" />
-        <div className="bg-gradient-to-b from-[#111827]/60 to-[#0f172a]/90 p-10 rounded-3xl border border-white/10 shadow-2xl relative z-10">
-          <div className="h-20 w-20 bg-emerald-950/20 border border-emerald-900/30 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-8 scale-100 animate-pulse-glow shadow-md shadow-emerald-950/20">
-            <ShieldCheck className="h-10 w-10 text-emerald-450" />
+      <div className="bg-gradient-to-br from-orange-50 via-amber-50 to-white min-h-screen flex items-center">
+        <div className="max-w-md mx-auto px-6">
+          <div className="card-premium p-12 text-center">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-500/20">
+              <CheckCircle2 className="w-8 h-8 text-green-600" />
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">Order Confirmed!</h2>
+            <p className="text-gray-600 mb-8">
+              Your lease has been successfully scheduled. Check your email for details and tracking information.
+            </p>
+            <Link
+              to="/my-rentals"
+              className="btn btn-primary btn-lg w-full justify-center mb-3"
+            >
+              View My Rentals
+            </Link>
+            <Link
+              to="/"
+              className="btn btn-secondary w-full justify-center"
+            >
+              Back to Home
+            </Link>
           </div>
-          <h2 className="text-3xl font-black text-white mb-4">Order Placed!</h2>
-          <p className="text-slate-400 text-xs leading-relaxed mb-10 font-semibold">
-            Your delivery has been successfully scheduled. You can now track your order status and manage your active leases in the dashboard.
-          </p>
-          <Link
-            to="/my-rentals"
-            className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-extrabold rounded-2xl py-4 flex items-center justify-center space-x-2 transition-all duration-300 shadow-2xl shadow-violet-600/20 hover:shadow-violet-600/35 hover:scale-[1.01] active:scale-95 text-sm"
-          >
-            Go to My Rentals
-          </Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-16 relative animate-slide-up">
-      
-      {/* Background blur */}
-      <div className="absolute top-1/4 right-1/4 w-[350px] h-[350px] bg-violet-500/5 rounded-full blur-[120px] pointer-events-none" />
-
-      {/* Title */}
-      <div className="mb-14 text-center md:text-left">
-        <span className="text-[10px] text-violet-400 font-extrabold uppercase tracking-widest font-display">Secure Pipeline</span>
-        <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight mt-1.5">Delivery & Checkout</h1>
-        <p className="text-slate-400 text-sm mt-2 font-medium">Provide address details and pick an available slot to complete your lease.</p>
-      </div>
-
-      <div className="grid lg:grid-cols-12 gap-10 items-start">
+    <div className="bg-gradient-to-br from-orange-50 via-amber-50 to-white min-h-screen">
+      <div className="max-w-7xl mx-auto px-6 py-12">
         
-        {/* Left Form Panel */}
-        <form onSubmit={handleCheckoutSubmit} className="lg:col-span-8 space-y-8">
-          
-          {/* Error alerts */}
-          {errorMsg && (
-            <div className="bg-red-950/20 border border-red-900/30 text-red-405 p-5 rounded-2xl text-xs flex items-start space-x-3 shadow-lg">
-              <AlertCircle className="h-4.5 w-4.5 shrink-0 mt-0.5" />
-              <span className="font-extrabold">{errorMsg}</span>
-            </div>
-          )}
+        {/* Header */}
+        <div className="mb-12">
+          <h1 className="text-5xl font-bold text-gray-900 mb-3">Delivery & Checkout</h1>
+          <p className="text-gray-600">Complete your lease by providing delivery details</p>
+        </div>
 
-          {/* Section 1: Shipping Address */}
-          <div className="bg-[#111827]/40 p-6 md:p-9 rounded-3xl border border-white/10 shadow-lg space-y-6">
-            <h2 className="text-xl font-extrabold text-white flex items-center mb-1">
-              <Truck className="h-5 w-5 mr-3 text-violet-455 animate-float" />
-              1. Delivery Address
-            </h2>
-            
-            <div>
-              <label className="block text-slate-400 text-[10px] font-extrabold uppercase tracking-widest mb-3" htmlFor="street">
-                Street Address
-              </label>
-              <input
-                id="street"
-                type="text"
-                value={street}
-                onChange={(e) => setStreet(e.target.value)}
-                placeholder="Apartment, building, suite, street name"
-                className="w-full glass-input rounded-xl py-3 px-4.5 text-slate-100 placeholder-slate-500 text-sm focus:border-violet-500 transition-colors"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
-              <div>
-                <label className="block text-slate-400 text-[10px] font-extrabold uppercase tracking-widest mb-3" htmlFor="city">
-                  City
-                </label>
-                <input
-                  id="city"
-                  type="text"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  placeholder="e.g. New York"
-                  className="w-full glass-input rounded-xl py-3 px-4.5 text-slate-100 placeholder-slate-500 text-sm focus:border-violet-500 transition-colors"
-                />
-              </div>
-
-              <div>
-                <label className="block text-slate-400 text-[10px] font-extrabold uppercase tracking-widest mb-3" htmlFor="state">
-                  State
-                </label>
-                <input
-                  id="state"
-                  type="text"
-                  value={state}
-                  onChange={(e) => setState(e.target.value)}
-                  placeholder="e.g. NY"
-                  className="w-full glass-input rounded-xl py-3 px-4.5 text-slate-100 placeholder-slate-500 text-sm focus:border-violet-500 transition-colors"
-                />
-              </div>
-
-              <div className="col-span-2 md:col-span-1">
-                <label className="block text-slate-400 text-[10px] font-extrabold uppercase tracking-widest mb-3" htmlFor="zip">
-                  Zip / Postal Code
-                </label>
-                <input
-                  id="zip"
-                  type="text"
-                  value={zipCode}
-                  onChange={(e) => setZipCode(e.target.value)}
-                  placeholder="10001"
-                  className="w-full glass-input rounded-xl py-3 px-4.5 text-slate-100 placeholder-slate-500 text-sm focus:border-violet-500 transition-colors"
-                />
-              </div>
-            </div>
+        {/* Progress Indicators */}
+        <div className="flex items-center justify-center mb-12">
+          <div className="flex items-center space-x-2">
+            <div className="w-10 h-10 bg-cyan-600 text-white rounded-full flex items-center justify-center font-bold">1</div>
+            <div className="text-xs font-semibold text-cyan-600 uppercase tracking-wider">Address</div>
           </div>
-
-          {/* Section 2: Delivery Slot */}
-          <div className="bg-[#111827]/40 p-6 md:p-9 rounded-3xl border border-white/10 shadow-lg space-y-6">
-            <h2 className="text-xl font-extrabold text-white flex items-center mb-1">
-              <Calendar className="h-5 w-5 mr-3 text-indigo-400" />
-              2. Delivery Scheduling
-            </h2>
-            <p className="text-slate-400 text-xs leading-relaxed max-w-lg font-medium">
-              We need a scheduled time to deliver and set up your items. Slots are subject to a logistics capacity check.
-            </p>
-
-            <div className="grid md:grid-cols-2 gap-5">
-              <div>
-                <label className="block text-slate-400 text-[10px] font-extrabold uppercase tracking-widest mb-3" htmlFor="date">
-                  Delivery Date
-                </label>
-                <input
-                  id="date"
-                  type="date"
-                  min={minDateString}
-                  value={deliveryDate}
-                  onChange={(e) => setDeliveryDate(e.target.value)}
-                  className="w-full glass-input rounded-xl py-3 px-4.5 text-slate-100 placeholder-slate-500 text-sm focus:border-violet-500 transition-colors"
-                />
-              </div>
-
-              <div>
-                <label className="block text-slate-400 text-[10px] font-extrabold uppercase tracking-widest mb-3" htmlFor="slot">
-                  Select Time Slot
-                </label>
-                <select
-                  id="slot"
-                  value={deliverySlot}
-                  onChange={(e) => setDeliverySlot(e.target.value)}
-                  className="w-full bg-slate-950/60 border border-white/15 hover:border-white/20 rounded-xl py-3 px-4.5 text-white text-sm focus:outline-none focus:border-violet-500 transition-colors"
-                >
-                  <option value="09:00 AM - 01:00 PM">Morning (09:00 AM - 01:00 PM)</option>
-                  <option value="02:00 PM - 06:00 PM">Afternoon (02:00 PM - 06:00 PM)</option>
-                  <option value="06:00 PM - 10:00 PM">Evening (06:00 PM - 10:00 PM)</option>
-                </select>
-              </div>
-            </div>
+          <div className="w-16 h-1 bg-cyan-200 mx-4"></div>
+          <div className="flex items-center space-x-2">
+            <div className="w-10 h-10 bg-cyan-600 text-white rounded-full flex items-center justify-center font-bold">2</div>
+            <div className="text-xs font-semibold text-cyan-600 uppercase tracking-wider">Delivery</div>
           </div>
-
-          {/* Section 3: Payment Simulation */}
-          <div className="bg-[#111827]/40 p-6 md:p-9 rounded-3xl border border-white/10 shadow-lg space-y-4">
-            <h2 className="text-xl font-extrabold text-white flex items-center mb-1">
-              <CreditCard className="h-5 w-5 mr-3 text-emerald-450 animate-bounce-slow" />
-              3. Payment Verification
-            </h2>
-            <p className="text-slate-405 text-xs leading-relaxed font-semibold">
-              This is a development simulation. No real credit card details will be charged. Click checkout below to complete the lease transaction.
-            </p>
-          </div>
-
-          {/* Checkout Action Button */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-extrabold rounded-2xl py-4 flex items-center justify-center space-x-2.5 shadow-2xl shadow-violet-600/25 hover:shadow-violet-600/35 transform hover:-translate-y-0.5 active:scale-95 transition-all duration-300 disabled:opacity-50 text-sm"
-          >
-            {loading ? <span>Scheduling Delivery...</span> : <span>Confirm Order & Schedule Delivery</span>}
-          </button>
-
-        </form>
-
-        {/* Right Summary Panel */}
-        <div className="lg:col-span-4">
-          <div className="bg-gradient-to-b from-[#111827]/60 to-[#0f172a]/80 p-7 rounded-3xl border border-white/10 shadow-2xl">
-            
-            <h3 className="text-lg font-bold text-white mb-6 uppercase tracking-widest text-sm">Summary</h3>
-            
-            <div className="max-h-56 overflow-y-auto space-y-4 mb-6 pr-1.5 scrollbar-thin">
-              {cart.map((item) => (
-                <div key={`${item.productId}-${item.tenure}`} className="flex justify-between items-start text-xs border-b border-white/5 pb-3">
-                  <div>
-                    <span className="text-white font-bold block line-clamp-1">{item.product.name}</span>
-                    <span className="text-slate-400 font-semibold mt-1 block">{item.tenure} mo plan • Qty {item.quantity}</span>
-                  </div>
-                  <span className="text-white font-extrabold">₹{item.product.pricing[item.tenure] * item.quantity}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="space-y-4 border-b border-white/5 pb-6 mb-6 text-xs font-bold">
-              <div className="flex justify-between text-slate-400">
-                <span className="text-slate-400">Monthly Subtotal</span>
-                <span className="text-white font-extrabold">₹{totalMonthly}</span>
-              </div>
-              <div className="flex justify-between text-slate-400">
-                <span className="text-slate-400">Security Deposit Subtotal</span>
-                <span className="text-white font-extrabold">₹{totalDeposit}</span>
-              </div>
-              <div className="flex justify-between text-slate-400">
-                <span className="text-slate-400">Delivery & Setup</span>
-                <span className="text-emerald-450 font-extrabold uppercase text-[9px] tracking-widest bg-emerald-950/20 px-2.5 py-0.5 rounded-lg shadow-sm">Free</span>
-              </div>
-            </div>
-
-            <div className="flex justify-between items-center mb-1">
-              <span className="text-[10px] font-extrabold text-slate-200 uppercase tracking-widest">Due Today</span>
-              <span className="text-2xl font-black text-violet-400">₹{totalMonthly + totalDeposit}</span>
-            </div>
-            
-            <span className="text-[8px] text-slate-500 text-right block font-extrabold tracking-wider uppercase leading-relaxed mt-3">
-              Deposits are refunded in full upon lease end.
-            </span>
-
+          <div className="w-16 h-1 bg-gray-300 mx-4"></div>
+          <div className="flex items-center space-x-2">
+            <div className="w-10 h-10 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center font-bold">3</div>
+            <div className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Payment</div>
           </div>
         </div>
 
+        <div className="grid lg:grid-cols-12 gap-8">
+          
+          {/* Left: Forms */}
+          <form onSubmit={handleCheckoutSubmit} className="lg:col-span-8 space-y-6">
+            
+            {/* Error Alert */}
+            {errorMsg && (
+              <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg flex items-start space-x-3">
+                <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                <span className="text-sm">{errorMsg}</span>
+              </div>
+            )}
+
+            {/* Section 1: Shipping Address */}
+            <div className="card-premium p-8">
+              <h2 className="text-xl font-bold text-gray-900 flex items-center mb-6">
+                <Truck className="w-5 h-5 mr-3 text-cyan-600" />
+                1. Delivery Address
+              </h2>
+              
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-gray-700 text-sm font-semibold mb-2">
+                    Street Address
+                  </label>
+                  <input
+                    type="text"
+                    value={street}
+                    onChange={(e) => setStreet(e.target.value)}
+                    placeholder="Apartment, building, street name"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:border-cyan-500 focus:ring-2 focus:ring-cyan-100 transition-all text-sm"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-gray-700 text-sm font-semibold mb-2">
+                      City
+                    </label>
+                    <input
+                      type="text"
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                      placeholder="e.g. New York"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:border-cyan-500 focus:ring-2 focus:ring-cyan-100 transition-all text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 text-sm font-semibold mb-2">
+                      State
+                    </label>
+                    <input
+                      type="text"
+                      value={state}
+                      onChange={(e) => setState(e.target.value)}
+                      placeholder="e.g. NY"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:border-cyan-500 focus:ring-2 focus:ring-cyan-100 transition-all text-sm"
+                    />
+                  </div>
+
+                  <div className="col-span-2 md:col-span-1">
+                    <label className="block text-gray-700 text-sm font-semibold mb-2">
+                      Zip Code
+                    </label>
+                    <input
+                      type="text"
+                      value={zipCode}
+                      onChange={(e) => setZipCode(e.target.value)}
+                      placeholder="10001"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:border-cyan-500 focus:ring-2 focus:ring-cyan-100 transition-all text-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 2: Delivery Slot */}
+            <div className="card-premium p-8">
+              <h2 className="text-xl font-bold text-gray-900 flex items-center mb-6">
+                <Calendar className="w-5 h-5 mr-3 text-cyan-600" />
+                2. Delivery Scheduling
+              </h2>
+              <p className="text-gray-600 text-sm mb-6">
+                Choose a convenient date and time slot for delivery and setup
+              </p>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-700 text-sm font-semibold mb-2">
+                    Delivery Date
+                  </label>
+                  <input
+                    type="date"
+                    min={minDateString}
+                    value={deliveryDate}
+                    onChange={(e) => setDeliveryDate(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:border-cyan-500 focus:ring-2 focus:ring-cyan-100 transition-all text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-gray-700 text-sm font-semibold mb-2">
+                    Time Slot
+                  </label>
+                  <select
+                    value={deliverySlot}
+                    onChange={(e) => setDeliverySlot(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:border-cyan-500 focus:ring-2 focus:ring-cyan-100 transition-all text-sm"
+                  >
+                    <option value="09:00 AM - 01:00 PM">Morning (9:00 AM - 1:00 PM)</option>
+                    <option value="02:00 PM - 06:00 PM">Afternoon (2:00 PM - 6:00 PM)</option>
+                    <option value="06:00 PM - 10:00 PM">Evening (6:00 PM - 10:00 PM)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 3: Payment */}
+            <div className="card-premium p-8">
+              <h2 className="text-xl font-bold text-gray-900 flex items-center mb-6">
+                <CreditCard className="w-5 h-5 mr-3 text-cyan-600" />
+                3. Payment
+              </h2>
+              <p className="text-gray-600 text-sm">
+                This is a development environment. Click "Confirm Order" to complete your lease.
+              </p>
+            </div>
+
+            {/* CTA Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn btn-primary btn-lg w-full justify-center disabled:opacity-50"
+            >
+              {loading ? 'Scheduling Delivery...' : 'Confirm Order & Schedule Delivery'}
+            </button>
+
+          </form>
+
+          {/* Right: Summary */}
+          <div className="lg:col-span-4">
+            <div className="card-premium p-8 sticky top-20">
+              <h3 className="text-xl font-bold text-gray-900 mb-6">Order Summary</h3>
+              
+              {/* Items */}
+              <div className="max-h-52 overflow-y-auto space-y-3 mb-6 pb-6 border-b border-gray-200">
+                {cart.map((item) => (
+                  <div key={`${item.productId}-${item.tenure}`} className="flex justify-between text-sm">
+                    <div>
+                      <p className="font-semibold text-gray-900 line-clamp-1">{item.product.name}</p>
+                      <p className="text-xs text-gray-500">{item.tenure}mo plan • Qty {item.quantity}</p>
+                    </div>
+                    <p className="font-semibold text-gray-900 flex-shrink-0 ml-2">
+                      ₹{item.product.pricing[item.tenure] * item.quantity}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Totals */}
+              <div className="space-y-3 mb-6 pb-6 border-b border-gray-200 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Monthly Subtotal</span>
+                  <span className="font-semibold text-gray-900">₹{totalMonthly}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Security Deposit</span>
+                  <span className="font-semibold text-gray-900">₹{totalDeposit}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Delivery & Setup</span>
+                  <span className="font-semibold text-green-600">FREE</span>
+                </div>
+              </div>
+
+              {/* Total Due */}
+              <div className="flex items-baseline justify-between mb-6">
+                <span className="text-gray-600 font-medium">Due Today</span>
+                <div className="text-right">
+                  <div className="text-3xl font-bold text-cyan-600">
+                    ₹{totalMonthly + totalDeposit}
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">1st month + refundable deposit</p>
+                </div>
+              </div>
+
+              {/* Trust Badge */}
+              <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
+                <p className="text-xs font-semibold text-blue-900 mb-1">✓ Secure Checkout</p>
+                <p className="text-xs text-blue-700">
+                  Deposits fully refundable. SSL encrypted. No real card charged.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
   );
