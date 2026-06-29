@@ -107,6 +107,16 @@ Ensure you have **Node.js (v18 or higher)** installed on your machine.
    ```
    *The application will boot on `http://localhost:5173`.*
 
+### 🛠️ Editor Configuration (VS Code)
+
+To suppress CSS linting warnings for Tailwind directives (e.g., `@tailwind`, `@apply`, `@layer`) in VS Code, a workspace configuration is included in `.vscode/settings.json`:
+```json
+{
+  "css.lint.unknownAtRules": "ignore"
+}
+```
+*Tip: Installing the official **Tailwind CSS IntelliSense** extension is highly recommended for autocomplete and automatic syntax support.*
+
 ---
 
 ## 🧪 Testing
@@ -143,7 +153,7 @@ The database seeds default test accounts automatically on launch:
 
 ### 📦 Products (`/api/products`)
 - `GET /` - Fetch all catalog products (with search query parsing).
-- `GET /:id` - Retrieve details of a single product.
+- `GET /:id` - Retrieve details of a single product (validates ID format, returning `400` if invalid).
 
 ### 🛒 Orders & Checkout (`/api/orders`)
 - `POST /` - Place a new order (adds rentals to active subscriptions).
@@ -154,6 +164,6 @@ The database seeds default test accounts automatically on launch:
 ### 🛡️ Admin Actions (`/api/admin`)
 - `GET /stats` - Retrieve administrative metrics.
 - `POST /products` - Insert a new product into the database.
-- `PUT /products/:id` - Edit product specifications and pricing.
-- `DELETE /products/:id` - Delete a product from inventory.
+- `PUT /products/:id` - Edit product specifications and pricing (validates ID format).
+- `DELETE /products/:id` - Delete a product from inventory (validates ID format).
 - `GET /orders` - Fetch all orders submitted on the platform.
