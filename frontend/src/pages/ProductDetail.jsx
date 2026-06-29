@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import { ChevronLeft, ShoppingCart, ShieldCheck, HelpCircle, AlertCircle, Calendar } from 'lucide-react';
+import { ChevronLeft, ShoppingCart, Shield, Info, AlertCircle, Check } from 'lucide-react';
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { addToCart } = useCart();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
-  // Custom Selection States
-  const [selectedTenure, setSelectedTenure] = useState(3); // default to 3 months plan
+
+  const [selectedTenure, setSelectedTenure] = useState(3);
   const [quantity, setQuantity] = useState(1);
   const [addedMsg, setAddedMsg] = useState(false);
 
@@ -22,7 +22,7 @@ const ProductDetail = () => {
       try {
         const res = await fetch(`http://localhost:5000/api/products/${id}`);
         const data = await res.json();
-        
+
         if (data.success) {
           setProduct(data.product);
         } else {
@@ -41,9 +41,12 @@ const ProductDetail = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-40 space-y-4">
-        <div className="h-10 w-10 border-4 border-brand-500 border-t-transparent rounded-full animate-spin" />
-        <span className="text-slate-500 text-xs font-bold tracking-wider uppercase">Loading asset details...</span>
+      <div className="flex flex-col items-center justify-center py-32 space-y-4">
+        <div className="relative w-12 h-12">
+          <div className="absolute inset-0 rounded-full border-3 border-gray-200"></div>
+          <div className="absolute inset-0 rounded-full border-3 border-transparent border-t-cyan-500 border-r-cyan-500 animate-spin"></div>
+        </div>
+        <span className="text-gray-500">Loading product...</span>
       </div>
     );
   }
@@ -51,11 +54,11 @@ const ProductDetail = () => {
   if (error || !product) {
     return (
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="bg-red-55/80 border border-red-200 text-red-700 p-10 rounded-3xl text-center max-w-xl mx-auto shadow-md">
-          <AlertCircle className="h-14 w-14 mx-auto mb-5 text-red-500" />
-          <h2 className="font-extrabold text-xl mb-2 text-slate-800">Item Retrieval Failed</h2>
-          <p className="text-xs text-red-600 mb-8">{error || 'Asset not found'}</p>
-          <Link to="/catalog" className="px-6 py-3 bg-red-100 border border-red-200 text-red-700 rounded-xl hover:bg-red-200 text-xs font-bold uppercase tracking-wider transition-colors inline-block">
+        <div className="bg-red-50 border border-red-200 text-red-700 p-8 rounded-lg text-center max-w-xl mx-auto">
+          <AlertCircle className="h-12 w-12 mx-auto mb-4" />
+          <p className="font-bold text-lg mb-2">Error</p>
+          <p className="text-sm mb-6">{error || 'Product not found'}</p>
+          <Link to="/catalog" className="btn btn-secondary">
             Back to Catalog
           </Link>
         </div>
@@ -65,7 +68,7 @@ const ProductDetail = () => {
 
   const handleAddToCart = () => {
     if (product.inventory <= 0) return;
-    
+
     addToCart(product, selectedTenure, quantity);
     setAddedMsg(true);
     setTimeout(() => setAddedMsg(false), 3000);
@@ -77,107 +80,89 @@ const ProductDetail = () => {
   const subtotalDeposit = itemDeposit * quantity;
   const dueNow = subtotalMonthly + subtotalDeposit;
 
-  // Tenure descriptive maps
-  const tenureLabels = [
-    { value: 1, discount: 'Standard' },
-    { value: 3, discount: 'Popular' },
-    { value: 6, discount: 'Save 15%' },
-    { value: 12, discount: 'Best Value' },
+  const tenureOptions = [
+    { value: 1, label: '1 Month', savings: 0 },
+    { value: 3, label: '3 Months', savings: 5 },
+    { value: 6, label: '6 Months', savings: 15 },
+    { value: 12, label: '12 Months', savings: 25 },
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-16 relative animate-slide-up">
-      
-      {/* Background glow */}
-      <div className="absolute top-0 right-1/4 w-[400px] h-[400px] bg-violet-500/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 left-1/4 w-[350px] h-[350px] bg-indigo-500/5 rounded-full blur-[100px] pointer-events-none" />
+    <div className="bg-gradient-to-br from-orange-50 via-amber-50 to-white min-h-screen">
+      <div className="max-w-7xl mx-auto px-6 py-12">
 
-      {/* Back Button */}
-      <Link to="/catalog" className="inline-flex items-center space-x-2.5 text-slate-400 hover:text-white transition-colors duration-250 mb-10 font-extrabold text-xs uppercase tracking-widest group">
-        <ChevronLeft className="h-4.5 w-4.5 group-hover:-translate-x-1 transition-transform" />
-        <span>Back to Catalog</span>
-      </Link>
+        {/* Breadcrumb */}
+        <Link to="/catalog" className="inline-flex items-center space-x-1.5 text-cyan-600 hover:text-cyan-700 font-medium text-sm mb-8 transition">
+          <ChevronLeft className="w-4 h-4" />
+          <span>Back to Catalog</span>
+        </Link>
 
-      <div className="grid lg:grid-cols-12 gap-12 items-start">
-        
-        {/* Left Column: Product Image & Description */}
-        <div className="lg:col-span-7 space-y-10">
-          <div className="bg-[#111827]/40 border border-white/10 rounded-3xl overflow-hidden relative aspect-[4/3] shadow-2xl">
-            <img
-              src={product.imageUrl}
-              alt={product.name}
-              className="h-full w-full object-cover transform hover:scale-[1.01] transition-transform duration-500"
-            />
-            <span className="absolute top-5 left-5 bg-[#0f172a]/70 border border-white/10 text-violet-300 text-[10px] font-extrabold uppercase tracking-widest px-4 py-2 rounded-xl shadow-md backdrop-blur-md">
-              {product.category}
-            </span>
-          </div>
+        <div className="grid lg:grid-cols-12 gap-12">
 
-          <div className="bg-[#111827]/30 border border-white/10 p-8 md:p-10 rounded-3xl space-y-5 shadow-lg">
-            <h3 className="text-xl font-extrabold text-white">Item Details & Dimensions</h3>
-            <p className="text-slate-350 text-sm leading-relaxed whitespace-pre-line font-medium">{product.description}</p>
-          </div>
-        </div>
+          {/* Left: Product Image */}
+          <div className="lg:col-span-6">
+            <div className="card-premium overflow-hidden sticky top-20">
+              <div className="aspect-square bg-gray-100 overflow-hidden">
+                <img
+                  src={product.imageUrl}
+                  alt={product.name}
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                />
+              </div>
 
-        {/* Right Column: Order Selection Panel */}
-        <div className="lg:col-span-5">
-          <div className="bg-gradient-to-b from-[#111827]/60 to-[#0f172a]/80 p-8 md:p-9 rounded-3xl border border-white/10 shadow-2xl sticky top-28">
-            
-            {/* Header info */}
-            <div className="mb-10">
-              <span className="text-[10px] text-violet-400 font-extrabold uppercase tracking-widest">{product.subCategory}</span>
-              <h1 className="text-3xl font-black text-white mt-2 mb-4 leading-tight">{product.name}</h1>
-              
-              <div className="flex flex-wrap items-center gap-3.5 text-xs font-semibold">
-                {product.inventory === 0 ? (
-                  <span className="bg-red-950/80 border border-red-900/30 text-red-400 font-extrabold px-3 py-1 rounded-lg uppercase tracking-wider text-[9px]">
-                    Out of Stock
-                  </span>
-                ) : (
-                  <span className="bg-emerald-950/80 border border-emerald-900/30 text-emerald-450 font-extrabold px-3 py-1 rounded-lg uppercase tracking-wider text-[9px]">
-                    In Stock ({product.inventory} available)
-                  </span>
-                )}
-                <span className="text-slate-800">•</span>
-                <span className="text-slate-400 font-medium">Refundable Deposit: ₹{product.deposit}</span>
+              {/* Quick Info */}
+              <div className="p-6 space-y-4 border-t border-gray-200">
+                <div>
+                  <span className="text-xs font-bold text-cyan-600 uppercase tracking-wider">{product.category}</span>
+                  <h1 className="text-3xl font-bold text-gray-900 mt-2">{product.name}</h1>
+                </div>
+
+                <p className="text-gray-600 leading-relaxed">{product.description}</p>
+
+                {/* Stock Status */}
+                <div className="flex items-center space-x-2 pt-4">
+                  {product.inventory === 0 ? (
+                    <span className="badge badge-error">Out of Stock</span>
+                  ) : (
+                    <>
+                      <span className="badge badge-success">In Stock</span>
+                      <span className="text-sm text-gray-600">({product.inventory} available)</span>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
+          </div>
 
-            {/* Select Tenure Plan */}
-            <div className="mb-10">
-              <label className="block text-slate-400 text-[10px] font-extrabold uppercase tracking-widest mb-4 flex items-center">
-                <Calendar className="h-4 w-4 mr-2.5 text-violet-400" />
-                Select Rental Plan (Tenure)
-              </label>
-              
-              <div className="grid grid-cols-2 gap-4">
-                {tenureLabels.map((plan) => {
-                  const rate = product.pricing[plan.value];
-                  const active = selectedTenure === plan.value;
+          {/* Right: Selection & Checkout */}
+          <div className="lg:col-span-6 space-y-6">
+
+            {/* Tenure Selection */}
+            <div className="card-premium p-8">
+              <h3 className="text-lg font-bold text-gray-900 mb-6">Select Rental Plan</h3>
+
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                {tenureOptions.map((option) => {
+                  const rate = product.pricing[option.value];
+                  const isSelected = selectedTenure === option.value;
+
                   return (
                     <button
-                      key={plan.value}
-                      onClick={() => setSelectedTenure(plan.value)}
-                      className={`p-4.5 rounded-2xl border text-left flex flex-col justify-between transition-all duration-350 hover:scale-[1.02] ${
-                        active
-                          ? 'bg-violet-500/10 border-violet-500 text-violet-300 shadow-lg shadow-violet-500/5 font-extrabold'
-                          : 'bg-slate-950/65 border-white/5 text-slate-400 hover:text-white hover:border-white/10'
-                      }`}
+                      key={option.value}
+                      onClick={() => setSelectedTenure(option.value)}
+                      className={`p-4 rounded-lg border-2 text-left transition-all ${isSelected
+                          ? 'border-cyan-500 bg-cyan-50 shadow-lg shadow-cyan-500/20'
+                          : 'border-gray-200 bg-white hover:border-gray-300'
+                        }`}
                     >
-                      <div className="flex items-center justify-between w-full mb-3">
-                        <span className="text-[10px] font-extrabold uppercase tracking-widest">{plan.value} {plan.value === 1 ? 'Month' : 'Months'}</span>
-                        <span className={`text-[8px] px-2 py-0.5 rounded-md font-black uppercase tracking-wider ${
-                          active
-                            ? 'bg-violet-600 text-white shadow'
-                            : 'bg-slate-900 text-slate-400 border border-white/10'
-                        }`}>
-                          {plan.discount}
-                        </span>
+                      <div className="flex justify-between items-start mb-2">
+                        <span className="font-semibold text-gray-900">{option.label}</span>
+                        {option.savings > 0 && (
+                          <span className="badge badge-success text-xs">Save {option.savings}%</span>
+                        )}
                       </div>
-                      <div className="flex items-baseline">
-                        <span className="text-2xl font-black text-white">₹{rate}</span>
-                        <span className="text-[9px] text-slate-500 font-bold tracking-wider uppercase ml-1.5">/mo</span>
-                      </div>
+                      <div className="text-2xl font-bold text-cyan-600">₹{rate}</div>
+                      <span className="text-xs text-gray-500">/month</span>
                     </button>
                   );
                 })}
@@ -185,84 +170,114 @@ const ProductDetail = () => {
             </div>
 
             {/* Quantity Selector */}
-            <div className="mb-10 flex items-center justify-between border-t border-white/5 pt-8">
-              <label className="text-slate-400 text-[10px] font-extrabold uppercase tracking-widest" htmlFor="quantity">
-                Quantity
-              </label>
-              <div className="flex items-center bg-slate-950/80 border border-white/15 rounded-2xl p-1 shadow-inner">
-                <button
-                  type="button"
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="h-9 w-9 text-slate-450 hover:text-white flex items-center justify-center font-bold text-lg transition-colors"
-                  disabled={product.inventory <= 0}
-                >
-                  -
-                </button>
-                <span className="w-12 text-center text-white text-xs font-extrabold">{quantity}</span>
-                <button
-                  type="button"
-                  onClick={() => setQuantity(Math.min(product.inventory, quantity + 1))}
-                  className="h-9 w-9 text-slate-450 hover:text-white flex items-center justify-center font-bold text-lg transition-colors"
-                  disabled={product.inventory <= 0 || quantity >= product.inventory}
-                >
-                  +
-                </button>
-              </div>
-            </div>
-
-            {/* Price Calculations breakdown */}
-            <div className="bg-slate-950/60 border border-white/5 p-6 rounded-2xl mb-10 space-y-4 shadow-inner">
-              <div className="flex justify-between text-xs text-slate-400 font-bold">
-                <span>Monthly Rent ({selectedTenure} mo plan)</span>
-                <span className="text-white">₹{monthlyPrice} × {quantity} = ₹{subtotalMonthly}</span>
-              </div>
-              
-              <div className="flex justify-between text-xs text-slate-400 font-bold">
-                <span className="flex items-center">
-                  Refundable Security Deposit
-                  <HelpCircle className="h-3.5 w-3.5 ml-1.5 text-slate-500 cursor-help" title="100% refundable upon returned item inspection" />
-                </span>
-                <span className="text-white">₹{itemDeposit} × {quantity} = ₹{subtotalDeposit}</span>
-              </div>
-
-              <div className="border-t border-white/5 pt-4 flex justify-between items-center">
-                <span className="text-[10px] font-extrabold text-slate-200 uppercase tracking-widest">Total Due Now</span>
-                <div className="text-right">
-                  <span className="text-2xl font-black text-violet-400">₹{dueNow}</span>
-                  <span className="text-[8px] text-slate-500 block font-bold mt-1">INCLUDES DEPOSIT + 1ST MONTH</span>
+            <div className="card-premium p-8">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold text-gray-900">Quantity</h3>
+                <div className="flex items-center bg-gray-100 rounded-lg p-1 border border-gray-200">
+                  <button
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    className="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-gray-900 font-bold transition"
+                    disabled={product.inventory <= 0}
+                  >
+                    −
+                  </button>
+                  <span className="w-12 text-center font-bold text-gray-900">{quantity}</span>
+                  <button
+                    onClick={() => setQuantity(Math.min(product.inventory, quantity + 1))}
+                    className="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-gray-900 font-bold transition"
+                    disabled={product.inventory <= 0 || quantity >= product.inventory}
+                  >
+                    +
+                  </button>
                 </div>
               </div>
             </div>
 
-            {/* Added to Cart Alert Box */}
+            {/* Price Breakdown */}
+            <div className="card-premium p-8 bg-gradient-to-br from-cyan-50 to-white">
+              <h3 className="text-lg font-bold text-gray-900 mb-6">Payment Breakdown</h3>
+
+              <div className="space-y-4 mb-6 pb-6 border-b border-gray-200">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Monthly Rent ({selectedTenure}mo plan)</span>
+                  <span className="font-semibold text-gray-900">₹{monthlyPrice} × {quantity} = <span className="text-cyan-600">₹{subtotalMonthly}</span></span>
+                </div>
+
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600 flex items-center space-x-1">
+                    <span>Refundable Deposit</span>
+                    <Info className="w-4 h-4 text-gray-400" title="100% refunded when item is returned in good condition" />
+                  </span>
+                  <span className="font-semibold text-gray-900">₹{itemDeposit} × {quantity} = <span className="text-cyan-600">₹{subtotalDeposit}</span></span>
+                </div>
+
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Delivery & Setup</span>
+                  <span className="font-semibold text-green-600">FREE</span>
+                </div>
+              </div>
+
+              {/* Total */}
+              <div className="flex items-center justify-between mb-6">
+                <span className="text-gray-600 font-medium">Due Today (1st month + deposit)</span>
+                <div className="text-right">
+                  <div className="text-3xl font-bold text-cyan-600">₹{dueNow}</div>
+                  <p className="text-xs text-gray-500 mt-1">Deposit refunded when returned</p>
+                </div>
+              </div>
+
+              {/* CTA Buttons */}
+              <div className="space-y-3">
+                <button
+                  onClick={handleAddToCart}
+                  disabled={product.inventory <= 0}
+                  className="btn btn-primary btn-lg w-full justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ShoppingCart className="w-5 h-5" />
+                  <span>Add to Cart</span>
+                </button>
+                <Link
+                  to="/checkout"
+                  className="btn btn-secondary w-full justify-center"
+                >
+                  Rent Now
+                </Link>
+              </div>
+            </div>
+
+            {/* Success Message */}
             {addedMsg && (
-              <div className="bg-emerald-950/20 border border-emerald-900/30 text-emerald-400 p-5 rounded-2xl text-xs flex items-center justify-between mb-6 animate-pulse-glow shadow-sm">
-                <span className="font-extrabold flex items-center tracking-wide">
-                  <ShieldCheck className="h-4.5 w-4.5 mr-2.5 text-emerald-500 shrink-0" />
-                  Item successfully added to cart!
-                </span>
-                <Link to="/cart" className="underline font-black hover:text-emerald-305 tracking-wide">View Cart</Link>
+              <div className="bg-green-50 border border-green-200 text-green-700 p-4 rounded-lg flex items-center space-x-3">
+                <Check className="w-5 h-5" />
+                <div>
+                  <p className="font-semibold">Added to cart!</p>
+                  <p className="text-sm"><Link to="/cart" className="underline font-semibold hover:text-green-800">View cart</Link> to proceed</p>
+                </div>
               </div>
             )}
 
-            {/* Actions */}
-            <button
-              onClick={handleAddToCart}
-              disabled={product.inventory <= 0}
-              className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-extrabold rounded-2xl py-4 flex items-center justify-center space-x-2.5 shadow-2xl shadow-violet-600/25 hover:shadow-violet-600/40 transform hover:-translate-y-0.5 active:scale-95 transition-all duration-300 disabled:opacity-40 disabled:transform-none disabled:shadow-none"
-            >
-              <ShoppingCart className="h-5 w-5" />
-              <span>Add to Cart</span>
-            </button>
-            
-            <div className="mt-6 flex items-center justify-center text-[9px] text-slate-500 font-extrabold uppercase tracking-widest space-x-2">
-              <ShieldCheck className="h-4 w-4 text-emerald-500" />
-              <span>Extend or cancel lease at any time</span>
+            {/* Trust Badges */}
+            <div className="card-premium p-6 bg-blue-50">
+              <div className="space-y-3">
+                <div className="flex items-start space-x-3">
+                  <Shield className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-semibold text-gray-900 text-sm">Fully Refundable</p>
+                    <p className="text-xs text-gray-600">Security deposits returned 100% upon return</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <Check className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-semibold text-gray-900 text-sm">Free Cancellation</p>
+                    <p className="text-xs text-gray-600">Extend or cancel your lease anytime</p>
+                  </div>
+                </div>
+              </div>
             </div>
-
           </div>
-        </div>
 
+        </div>
       </div>
     </div>
   );
