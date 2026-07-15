@@ -1,0 +1,6 @@
+{
+  "version": 2,
+  "installCommand": "npm run install:all",
+  "devCommand": "npm run dev",
+  "buildCommand": "npm --prefix frontend run build"
+}
