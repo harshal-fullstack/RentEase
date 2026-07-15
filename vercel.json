@@ -9,6 +9,8 @@
     },
     "backend": {
       "root": "backend",
+      "framework": "express",
+      "entrypoint": "server.js",
       "installCommand": "npm install",
       "devCommand": "npm run dev"
     }
