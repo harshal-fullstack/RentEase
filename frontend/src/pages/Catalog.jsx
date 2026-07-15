@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
+import { API_URL } from '../config';
 import { Search, Filter, Package, AlertCircle } from 'lucide-react';
 
 const Catalog = () => {
@@ -16,7 +17,7 @@ const Catalog = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        let url = 'http://localhost:5000/api/products';
+        let url = `${API_URL}/products`;
         const params = [];
         
         if (categoryFilter && categoryFilter !== 'All') {
