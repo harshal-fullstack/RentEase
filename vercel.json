@@ -10,8 +10,7 @@
     "backend": {
       "root": "backend",
       "installCommand": "npm install",
-      "devCommand": "npm run dev",
-      "startCommand": "npm start"
+      "devCommand": "npm run dev"
     }
   }
 }
