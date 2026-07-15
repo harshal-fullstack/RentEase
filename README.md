@@ -45,7 +45,7 @@ sequenceDiagram
     actor User as Customer
     actor Admin as Store Manager
     participant API as Express API Server
-    database DB as MongoDB Database
+    participant DB as MongoDB Database
 
     %% Checkout flow
     User->>API: Add items & tenure (1,3,6,12mo) to Cart
