@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { API_URL } from '../config';
 import { Calendar, Truck, CreditCard, AlertCircle, ShoppingBag, CheckCircle2 } from 'lucide-react';
 
 const Checkout = () => {
@@ -61,7 +62,7 @@ const Checkout = () => {
         quantity: item.quantity,
       }));
 
-      const res = await fetch('http://localhost:5000/api/orders', {
+      const res = await fetch(`${API_URL}/orders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -273,8 +274,8 @@ const Checkout = () => {
                 <CreditCard className="w-5 h-5 mr-3 text-cyan-600" />
                 3. Payment
               </h2>
-              <p className="text-gray-600 text-sm">
-                This is a development environment. Click "Confirm Order" to complete your lease.
+              <p className="text-gray-600 text-sm font-medium">
+                Cash or Card swipe on delivery. The security deposit and first month's rent will be collected upon delivery and setup.
               </p>
             </div>
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { API_URL } from '../config';
 import { ChevronLeft, ShoppingCart, Shield, Info, AlertCircle, Check } from 'lucide-react';
 
 const ProductDetail = () => {
@@ -20,7 +21,7 @@ const ProductDetail = () => {
     const fetchProduct = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`http://localhost:5000/api/products/${id}`);
+        const res = await fetch(`${API_URL}/products/${id}`);
         const data = await res.json();
 
         if (data.success) {
