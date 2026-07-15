@@ -39,16 +39,6 @@ const Login = () => {
     }
   };
 
-  const handleAutofill = (type) => {
-    if (type === 'user') {
-      setEmail('user@rentease.com');
-      setPassword('user123');
-    } else {
-      setEmail('admin@rentease.com');
-      setPassword('admin123');
-    }
-  };
-
   return (
     <div className="bg-gradient-to-br from-orange-50 via-amber-50 to-white min-h-screen flex items-center justify-center px-6 py-12">
       <div className="w-full max-w-md">
@@ -122,33 +112,6 @@ const Login = () => {
               Create one
             </Link>
           </p>
-
-          {/* Demo Credentials */}
-          <div className="mt-8 pt-8 border-t border-gray-200">
-            <div className="bg-amber-50 border border-amber-200 p-4 rounded-lg mb-4 flex items-start space-x-2">
-              <Info className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-              <span className="text-xs text-amber-700 font-medium">
-                Demo credentials for testing:
-              </span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => handleAutofill('user')}
-                className="btn btn-secondary btn-sm text-xs justify-center"
-              >
-                Fill User
-              </button>
-              <button
-                type="button"
-                onClick={() => handleAutofill('admin')}
-                className="btn btn-secondary btn-sm text-xs justify-center"
-              >
-                Fill Admin
-              </button>
-            </div>
-          </div>
 
         </div>
 

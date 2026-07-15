@@ -8,6 +8,7 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('user');
+  const [secretKey, setSecretKey] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
   const { register, isAuthenticated } = useAuth();
@@ -28,6 +29,11 @@ const Register = () => {
 
     if (password.length < 6) {
       setErrorMsg('Password must be at least 6 characters long');
+      return;
+    }
+
+    if (role === 'admin' && secretKey !== 'Rent555') {
+      setErrorMsg('Invalid Manager Secret Key');
       return;
     }
 
@@ -129,6 +135,24 @@ const Register = () => {
                 <option value="admin">I'm a Manager</option>
               </select>
             </div>
+
+            {role === 'admin' && (
+              <div>
+                <label className="block text-gray-700 text-sm font-semibold mb-2">
+                  Manager Secret Key
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="password"
+                    value={secretKey}
+                    onChange={(e) => setSecretKey(e.target.value)}
+                    placeholder="Enter Secret Key to Register as Manager"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:border-cyan-500 focus:ring-2 focus:ring-cyan-100 transition-all text-sm font-medium"
+                  />
+                </div>
+              </div>
+            )}
 
             <button
               type="submit"
