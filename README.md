@@ -35,6 +35,135 @@ RentEase is a full-stack web application designed for renting furniture and home
 
 ---
 
+## 📊 Process Flow Diagram
+
+The following Mermaid diagram shows the complete lifecycle of a rental lease agreement, from choosing tenure plans to return delivery and repairs:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as Customer
+    actor Admin as Store Manager
+    participant API as Express API Server
+    database DB as MongoDB Database
+
+    %% Checkout flow
+    User->>API: Add items & tenure (1,3,6,12mo) to Cart
+    User->>API: Submit Checkout Request (POST /api/orders)
+    API->>DB: Check Delivery Slot Capacity & Inventory
+    DB-->>API: Validated (Under Cap limit of 5 per slot)
+    API->>DB: Create Order (Status: 'Scheduled') & Decrement Stock
+    API-->>User: Order Confirmed!
+
+    %% Delivery / Lease Activation
+    Note over Admin, API: Physical Delivery Process
+    Admin->>API: Mark Order as Delivered (PUT /api/orders/:id/deliver)
+    API->>DB: Update Order Status to 'Delivered'
+    API->>DB: Create Active Rental Lease Agreements
+    DB-->>API: Saved
+    API-->>Admin: Active leases established
+
+    %% User Lease management
+    Note over User, DB: User views "Active Leases" & "Order History"
+    User->>API: View dashboard (GET /api/rentals & /api/orders)
+    API-->>User: Render Dashboard tabs with status badges
+
+    %% Extension, Returns, Maintenance
+    par Extend Lease
+        User->>API: Request tenure extension (POST /api/rentals/:id/extend)
+        API->>DB: Update endDate & recalculate plan rate
+        API-->>User: Lease Extended!
+    and Schedule Return
+        User->>API: Choose pickup date/slot (POST /api/rentals/:id/return)
+        API->>DB: Update status to 'ReturnRequested'
+        API-->>User: Pickup scheduled
+        Admin->>API: Confirm Return complete (PUT /api/rentals/:id/return-complete)
+        API->>DB: Set status to 'Returned' & Increment stock inventory
+        API-->>Admin: Inventory restocked
+    and Request Maintenance
+        User->>API: Report damage/malfunction (POST /api/rentals/:id/maintenance)
+        API->>DB: Create Maintenance ticket (Status: 'Open')
+        API-->>User: Repair ticket raised
+        Admin->>API: Update Repair status/notes (PUT /api/rentals/maintenance/:id)
+        API->>DB: Save status & adminNotes
+        API-->>Admin: Ticket updated
+        User->>API: Pull live tickets
+        API-->>User: Display repair status & adminNotes
+    end
+```
+
+---
+
+## 🏗️ Process-to-Process Architecture
+
+RentEase follows a decoupled client-server architecture model ensuring high scalability and clear boundaries:
+
+```mermaid
+graph TD
+    %% Styling
+    classDef client fill:#e0f7fa,stroke:#006064,stroke-width:2px;
+    classDef server fill:#fdf6e3,stroke:#b58900,stroke-width:2px;
+    classDef db fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
+
+    %% Frontend Block
+    subgraph Client Application [Frontend SPA - React 19 / Vite]
+        AuthCtx[Auth Context - Session Storage]:::client
+        CartCtx[Cart Context - Reducer Store]:::client
+        UIRouter[React Router - Guards Route Access]:::client
+        MyRentDashboard[My Rentals Dashboard - Tabbed View]:::client
+        AdminCtrl[Admin Panel - Operations Management]:::client
+    end
+
+    %% Backend Block
+    subgraph API Server [Backend Service - Node.js / Express 5]
+        AuthGuard[Auth Middleware - JWT Check]:::server
+        AdminGuard[Admin Middleware - Role check]:::server
+        ProdController[Products Router]:::server
+        OrderController[Orders Router]:::server
+        RentController[Rentals Router]:::server
+    end
+
+    %% Database Block
+    subgraph Storage [Database Tier]
+        MongoMem[(Local persistence - MongoMemoryServer)]:::db
+        Atlas[(Cloud Database - MongoDB Atlas)]:::db
+    end
+
+    %% Interconnection edges
+    AuthCtx <-->|JWT Bearer token| AuthGuard
+    CartCtx -->|POST JSON order items| OrderController
+    MyRentDashboard <-->|Get rentals & raise maintenance| RentController
+    AdminCtrl <-->|Deliver orders & Resolve tickets| AdminGuard
+    AdminGuard --> RentController & OrderController
+    
+    ProdController & OrderController & RentController <-->|Mongoose ODM Queries| MongoMem
+    ProdController & OrderController & RentController <-->|Production Failover| Atlas
+```
+
+### ⚙️ Architecture Detail
+1. **Frontend (Client Process)**:
+   - Built as a Single Page Application (SPA). React context provides global hooks (`useAuth`, `useCart`) to prevent redundant API fetches.
+   - Client-side navigation guards route security. Normal users are isolated from `/admin` endpoints, and guests are redirected to `/login` when trying to checkout.
+2. **Backend (Server Process)**:
+   - Express runs an asynchronous REST API.
+   - JWT tokens are validated statelessly using symmetric keys on the `Authorization` header.
+   - Separate router scopes manage collections.
+3. **Database (Data Process)**:
+   - For simple local setups, `mongodb-memory-server` spins up a virtual Mongo instance in the background. It persists data to a local `.mongodb_data` directory, meaning developers do not need to install MongoDB on their machine.
+   - Transitioning to production requires setting the environment variable `MONGODB_URI` to connect directly to a live cluster.
+
+---
+
+## 💡 Why This Design? (Architecture Decisions)
+
+- **Tenure-Based Subscriptions**: Traditional e-commerce models use flat pricing. RentEase implements a dynamic pricing matrix (`pricing: { 1: X, 3: Y, 6: Z, 12: W }`). Choosing a longer lease duration lowers the monthly rental rate, reflecting real-world rental business models where long-term customer lock-in yields higher predictable LTV (Lifetime Value).
+- **Physical Operations Alignment**: When a customer checkouts, a `Rental` is **not** immediately active. The system separates the checkout booking (`Order` set to `Scheduled`) from lease activation (`Rental` set to `Active`). A rental lease only starts when the product is physically delivered to the site, allowing shipping/lead time tracking.
+- **Inventory Protection Lock**: When an order is placed, stock levels are decremented instantly to prevent over-booking. If the order is cancelled before delivery, stock is immediately restored.
+- **Complaints loop**: Maintenance requests are tied directly to active leases. By adding `adminNotes` and `status` updates on the ticket, RentEase ensures customers and support technicians have a synchronous communications channel.
+- **Strict Registration Guards**: Normal user accounts require no keys, but registering a Manager account requires the private passcode (`Rent555`). This prevents arbitrary users from gaining administrative control in a real deployment.
+
+---
+
 ## 📂 Project Structure
 
 ```
@@ -130,40 +259,40 @@ To run backend integration tests:
 
 ---
 
-## 🔑 Demo Access Credentials
+## 🔑 Access & Role Setup
 
-The database seeds default test accounts automatically on launch:
-
-### 👤 Test Customer Account
-- **Email:** `user@rentease.com`
-- **Password:** `user123`
-
-### 🛡️ Test Admin Account
-- **Email:** `admin@rentease.com`
-- **Password:** `admin123`
+For testing and initial execution:
+- **Boot Seeding**: The server automatically boots up with default accounts in clean databases (`user@rentease.com`/`user123` as a standard Customer, and `admin@rentease.com`/`admin123` as a Manager).
+- **Manager Signups**: Select **I'm a Manager** on the registration page and input the authorization key **`Rent555`** to secure administrative privileges.
+- **Customer Signups**: Standard registrations require no passcode.
 
 ---
 
 ## 🔌 API Documentation Summary
 
 ### 🔐 Authentication (`/api/auth`)
-- `POST /register` - Create new customer/admin user account.
-- `POST /login` - Log in and obtain JWT token.
+- `POST /register` - Create user account (accepts optional `secretKey` for managers).
+- `POST /login` - Log in and obtain session JWT token.
 - `GET /me` - Retrieve profile info of currently logged-in user.
 
 ### 📦 Products (`/api/products`)
-- `GET /` - Fetch all catalog products (with search query parsing).
-- `GET /:id` - Retrieve details of a single product (validates ID format, returning `400` if invalid).
+- `GET /` - Fetch catalog products (supports searching & category parameters).
+- `GET /:id` - Retrieve details of a single product.
 
 ### 🛒 Orders & Checkout (`/api/orders`)
-- `POST /` - Place a new order (adds rentals to active subscriptions).
+- `POST /` - Place a new order (creates a `Scheduled` order).
+- `GET /` - Fetch orders history for the authenticated user.
+- `GET /all` - **(Admin)** Fetch all orders submitted on the platform.
+- `PUT /:id/deliver` - Mark order as `Delivered` and establish active leases.
+- `PUT /:id/cancel` - Cancel order and restore product inventories.
 
-### 📅 Rentals (`/api/rentals`)
-- `GET /` - Fetch list of active rentals for the current customer.
-
-### 🛡️ Admin Actions (`/api/admin`)
-- `GET /stats` - Retrieve administrative metrics.
-- `POST /products` - Insert a new product into the database.
-- `PUT /products/:id` - Edit product specifications and pricing (validates ID format).
-- `DELETE /products/:id` - Delete a product from inventory (validates ID format).
-- `GET /orders` - Fetch all orders submitted on the platform.
+### 📅 Rentals & Leases (`/api/rentals`)
+- `GET /` - Fetch active/extended/return-scheduled rentals for the current customer.
+- `POST /:id/extend` - Extend an active rental lease by `1`, `3`, `6`, or `12` months.
+- `POST /:id/return` - Request return pickup date & timing slot (sets status to `ReturnRequested`).
+- `POST /:id/maintenance` - Raise a repair/service ticket for active leases.
+- `GET /maintenance/user` - Fetch list of repair tickets raised by the current user.
+- `GET /admin/all` - **(Admin)** Fetch all active leases in the system.
+- `GET /maintenance/all` - **(Admin)** Fetch all maintenance complaints.
+- `PUT /maintenance/:id` - **(Admin)** Update maintenance ticket status (Open -> In Progress -> Resolved -> Cancelled) and save admin response notes.
+- `PUT /:id/return-complete` - **(Admin)** Confirm return pickup, set rental status to `Returned`, and restore inventory levels.
