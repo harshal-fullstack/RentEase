@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { API_URL } from '../config';
 import { Sofa, Refrigerator, ArrowRight, Zap, Check, TrendingUp, Shield, Truck } from 'lucide-react';
 
 const Home = () => {
@@ -8,7 +9,7 @@ const Home = () => {
   useEffect(() => {
     const fetchFeaturedProduct = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/products');
+        const res = await fetch(`${API_URL}/products`);
         const data = await res.json();
         if (data.success && data.products && data.products.length > 0) {
           // Find the Modern 3-Seater Fabric Sofa or default to the first product
