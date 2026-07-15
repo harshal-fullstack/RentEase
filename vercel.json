@@ -1,15 +1,17 @@
 {
   "version": 2,
-  "installCommand": "npm run install:all",
-  "devCommand": "npm run dev",
-  "buildCommand": "npm --prefix frontend run build",
   "services": {
     "frontend": {
       "root": "frontend",
-      "framework": "vite"
+      "framework": "vite",
+      "installCommand": "npm install",
+      "buildCommand": "npm run build"
     },
     "backend": {
-      "root": "backend"
+      "root": "backend",
+      "installCommand": "npm install",
+      "devCommand": "npm run dev",
+      "startCommand": "npm start"
     }
   }
 }
