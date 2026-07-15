@@ -195,7 +195,29 @@ Ensure you have **Node.js (v18 or higher)** installed on your machine.
 
 ---
 
-### Step 1: Run the Backend Server
+### Quick Start (Recommended)
+
+From the project root directory, run both backend and frontend together:
+
+```bash
+# Install all dependencies (root, backend, frontend)
+npm run install:all
+
+# Start both backend and frontend with a single command
+npm run dev
+```
+
+This will automatically:
+- ✅ Start Backend on `http://localhost:5000`
+- ✅ Start Frontend on `http://localhost:5173`
+- ✅ Initialize MongoDB with in-memory server
+- ✅ Setup API proxy between frontend and backend
+
+---
+
+### Alternative: Run Backend & Frontend Separately
+
+#### Step 1: Run the Backend Server
 
 1. Open your terminal and navigate to the `backend` folder:
    ```bash
@@ -220,7 +242,7 @@ Ensure you have **Node.js (v18 or higher)** installed on your machine.
 
 ---
 
-### Step 2: Run the Frontend App
+#### Step 2: Run the Frontend App
 
 1. Open a new terminal window/tab and navigate to the `frontend` folder:
    ```bash
@@ -245,6 +267,26 @@ To suppress CSS linting warnings for Tailwind directives (e.g., `@tailwind`, `@a
 }
 ```
 *Tip: Installing the official **Tailwind CSS IntelliSense** extension is highly recommended for autocomplete and automatic syntax support.*
+
+---
+
+### 📝 Setup Files & Configuration
+
+The project has been configured for seamless full-stack development:
+
+| File | Purpose |
+|------|---------|
+| `package.json` (root) | Root-level scripts to run backend & frontend together |
+| `scripts/dev.js` | Custom launcher for parallel backend/frontend execution |
+| `frontend/vite.config.js` | API proxy configuration for development (routes `/api` to backend) |
+| `frontend/src/config.js` | Dynamic API URL configuration (uses proxy in dev, direct URL in production) |
+| `vercel.json` (root) | Vercel deployment configuration for full-stack app |
+
+**Key Features:**
+- 🔄 Single command to start both services
+- 🔗 Automatic API proxy between frontend and backend
+- 📦 In-memory MongoDB with local persistence
+- 🚀 Ready for Vercel deployment
 
 ---
 
