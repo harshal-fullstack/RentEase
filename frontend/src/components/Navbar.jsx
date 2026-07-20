@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
-import { ShoppingCart, LogOut, Settings, Menu, X, Home as HomeIcon } from 'lucide-react';
+import { ShoppingCart, LogOut, Settings, Menu, X, Home as HomeIcon, MapPin } from 'lucide-react';
+import { API_URL } from '../config';
 
 const Navbar = () => {
   const { user, logout, isAuthenticated, isAdmin } = useAuth();
@@ -10,6 +11,48 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [cities, setCities] = useState(['All']);
+  const [selectedCity, setSelectedCity] = useState(localStorage.getItem('rentease_city') || 'All');
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const res = await fetch(`${API_URL}/admin/service-areas`);
+        const data = await res.json();
+        if (data.success && data.serviceAreas) {
+          const activeCities = data.serviceAreas
+            .filter((area) => area.isActive)
+            .map((area) => area.cityName);
+          
+          if (!activeCities.includes('All')) {
+            activeCities.unshift('All');
+          }
+          setCities(activeCities);
+        }
+      } catch (err) {
+        console.error('Error fetching service areas:', err);
+      }
+    };
+    fetchCities();
+  }, []);
+
+  const handleCityChange = (e) => {
+    const city = e.target.value;
+    setSelectedCity(city);
+    localStorage.setItem('rentease_city', city);
+    
+    if (location.pathname === '/catalog') {
+      const searchParams = new URLSearchParams(location.search);
+      if (city === 'All') {
+        searchParams.delete('city');
+      } else {
+        searchParams.set('city', city);
+      }
+      navigate(`/catalog?${searchParams.toString()}`);
+    } else {
+      navigate(`/catalog?city=${city}`);
+    }
+  };
 
   const handleLogout = () => {
     logout();
@@ -23,15 +66,33 @@ const Navbar = () => {
     <nav className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-teal-600 rounded-lg flex items-center justify-center transition-transform group-hover:scale-110">
-              <span className="text-white font-bold text-lg">RE</span>
+          <div className="flex items-center space-x-4">
+            {/* Logo */}
+            <Link to="/" className="flex items-center space-x-3 group">
+              <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-teal-600 rounded-lg flex items-center justify-center transition-transform group-hover:scale-110">
+                <span className="text-white font-bold text-lg">RE</span>
+              </div>
+              <span className="hidden sm:block text-xl font-bold bg-gradient-to-r from-cyan-600 to-teal-700 bg-clip-text text-transparent">
+                RentEase
+              </span>
+            </Link>
+
+            {/* City Selector */}
+            <div className="flex items-center space-x-1.5 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-lg text-sm text-gray-700 shadow-sm">
+              <MapPin className="w-4 h-4 text-cyan-600 flex-shrink-0" />
+              <select
+                value={selectedCity}
+                onChange={handleCityChange}
+                className="bg-transparent font-semibold focus:outline-none cursor-pointer text-xs sm:text-sm text-gray-805"
+              >
+                {cities.map((city) => (
+                  <option key={city} value={city}>
+                    {city}
+                  </option>
+                ))}
+              </select>
             </div>
-            <span className="hidden sm:block text-xl font-bold bg-gradient-to-r from-cyan-600 to-teal-700 bg-clip-text text-transparent">
-              RentEase
-            </span>
-          </Link>
+          </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1">
