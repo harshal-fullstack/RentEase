@@ -12,6 +12,7 @@ const Catalog = () => {
 
   const categoryFilter = searchParams.get('category') || 'All';
   const searchQuery = searchParams.get('search') || '';
+  const cityFilter = searchParams.get('city') || localStorage.getItem('rentease_city') || 'All';
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -26,6 +27,10 @@ const Catalog = () => {
         
         if (searchQuery) {
           params.push(`search=${encodeURIComponent(searchQuery)}`);
+        }
+
+        if (cityFilter && cityFilter !== 'All') {
+          params.push(`city=${encodeURIComponent(cityFilter)}`);
         }
 
         if (params.length > 0) {
@@ -49,7 +54,7 @@ const Catalog = () => {
     };
 
     fetchProducts();
-  }, [categoryFilter, searchQuery]);
+  }, [categoryFilter, searchQuery, cityFilter]);
 
   const handleCategorySelect = (category) => {
     const newParams = new URLSearchParams(searchParams);
