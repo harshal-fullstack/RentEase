@@ -4,6 +4,8 @@ const dotenv = require('dotenv');
 const { connectDB } = require('./config/db');
 const User = require('./models/User');
 const Product = require('./models/Product');
+const Business = require('./models/Business');
+const ServiceArea = require('./models/ServiceArea');
 
 // Load environment variables
 dotenv.config();
@@ -129,6 +131,56 @@ const seedDatabase = async () => {
       await defaultAdmin.save();
 
       console.log('Default users seeded successfully! (user@rentease.com / admin@rentease.com)');
+    }
+
+    // Check if Service Areas exist
+    const serviceAreaCount = await ServiceArea.countDocuments();
+    if (serviceAreaCount === 0) {
+      console.log('Seeding service areas...');
+      const serviceAreas = [
+        { cityName: 'All', isActive: true },
+        { cityName: 'Bangalore', isActive: true },
+        { cityName: 'Mumbai', isActive: true },
+        { cityName: 'Delhi', isActive: true },
+        { cityName: 'Pune', isActive: true },
+        { cityName: 'Hyderabad', isActive: true },
+      ];
+      await ServiceArea.insertMany(serviceAreas);
+      console.log('Service areas seeded successfully!');
+    }
+
+    // Check if Businesses exist
+    const businessCount = await Business.countDocuments();
+    if (businessCount === 0) {
+      console.log('Seeding business partners...');
+      const allProducts = await Product.find();
+      const productIds = allProducts.map((p) => p._id);
+
+      const businesses = [
+        {
+          name: 'Swift Logistics Partner',
+          skillType: 'Delivery',
+          servicesOffered: ['Product Delivery', 'Furniture Assembly', 'Appliance Setup'],
+          products: productIds,
+          pricing: 500,
+        },
+        {
+          name: 'FixIt Squad Repairs',
+          skillType: 'Repair',
+          servicesOffered: ['General Service', 'Damage Repair', 'Product Replacement'],
+          products: productIds,
+          pricing: 350,
+        },
+        {
+          name: 'Clean & Shine Maintenance',
+          skillType: 'Maintenance',
+          servicesOffered: ['Deep Cleaning', 'Sanitization', 'Asset Inspection'],
+          products: productIds,
+          pricing: 200,
+        },
+      ];
+      await Business.insertMany(businesses);
+      console.log('Business partners seeded successfully!');
     }
   } catch (error) {
     console.error(`Database seeding failed: ${error.message}`);
