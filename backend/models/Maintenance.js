@@ -18,7 +18,7 @@ const maintenanceSchema = new mongoose.Schema({
   },
   issueType: {
     type: String,
-    enum: ['Damage', 'Malfunction', 'Replacement', 'General Service'],
+    enum: ['Damage', 'Malfunction', 'Replacement', 'General Service', 'Billing Dispute', 'Damage Dispute'],
     required: [true, 'Please select an issue type'],
   },
   description: {
