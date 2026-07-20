@@ -5,6 +5,8 @@ const Product = require('../models/Product');
 const Order = require('../models/Order');
 const Rental = require('../models/Rental');
 const Maintenance = require('../models/Maintenance');
+const Business = require('../models/Business');
+const ServiceArea = require('../models/ServiceArea');
 const { protect, admin } = require('../middleware/auth');
 
 // @desc    Get dashboard metrics (MRR, Utilization, active orders/tickets counts)
@@ -63,6 +65,90 @@ router.get('/stats', protect, admin, async (req, res) => {
         returnRequestsCount,
       },
     });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// @desc    Get all users
+// @route   GET /api/admin/users
+// @access  Private/Admin
+router.get('/users', protect, admin, async (req, res) => {
+  try {
+    const users = await User.find({}).select('-password').sort({ createdAt: -1 });
+    return res.json({ success: true, count: users.length, users });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// @desc    Get all business partners (vendors)
+// @route   GET /api/admin/businesses
+// @access  Private/Admin
+router.get('/businesses', protect, admin, async (req, res) => {
+  try {
+    const businesses = await Business.find({}).populate('products').sort({ name: 1 });
+    return res.json({ success: true, count: businesses.length, businesses });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// @desc    Get all service areas
+// @route   GET /api/admin/service-areas
+// @access  Public
+router.get('/service-areas', async (req, res) => {
+  try {
+    const serviceAreas = await ServiceArea.find({}).sort({ cityName: 1 });
+    return res.json({ success: true, count: serviceAreas.length, serviceAreas });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// @desc    Create service area
+// @route   POST /api/admin/service-areas
+// @access  Private/Admin
+router.post('/service-areas', protect, admin, async (req, res) => {
+  const { cityName, isActive } = req.body;
+  try {
+    const area = await ServiceArea.create({ cityName, isActive });
+    return res.status(201).json({ success: true, serviceArea: area });
+  } catch (error) {
+    return res.status(400).json({ success: false, message: error.message });
+  }
+});
+
+// @desc    Update service area
+// @route   PUT /api/admin/service-areas/:id
+// @access  Private/Admin
+router.put('/service-areas/:id', protect, admin, async (req, res) => {
+  const { cityName, isActive } = req.body;
+  try {
+    const area = await ServiceArea.findById(req.params.id);
+    if (!area) {
+      return res.status(404).json({ success: false, message: 'Service area not found' });
+    }
+    if (cityName !== undefined) area.cityName = cityName;
+    if (isActive !== undefined) area.isActive = isActive;
+    await area.save();
+    return res.json({ success: true, serviceArea: area });
+  } catch (error) {
+    return res.status(400).json({ success: false, message: error.message });
+  }
+});
+
+// @desc    Delete service area
+// @route   DELETE /api/admin/service-areas/:id
+// @access  Private/Admin
+router.delete('/service-areas/:id', protect, admin, async (req, res) => {
+  try {
+    const area = await ServiceArea.findById(req.params.id);
+    if (!area) {
+      return res.status(404).json({ success: false, message: 'Service area not found' });
+    }
+    await ServiceArea.findByIdAndDelete(req.params.id);
+    return res.json({ success: true, message: 'Service area deleted successfully' });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
