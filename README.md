@@ -1,25 +1,30 @@
 # 📦 RentEase - Premium Full-Stack Rental Platform
 
-RentEase is a full-stack web application designed for renting furniture and home appliances. Built with a modern tech stack, RentEase provides flexible, tenure-based pricing subscriptions, an intuitive shopping cart, secure checkout, a dedicated customer portal, and a powerful administrator dashboard.
+RentEase is a full-stack web application designed for renting furniture and home appliances. Built with a modern tech stack, RentEase provides flexible, tenure-based pricing subscriptions, location-specific product catalogs, an intuitive shopping cart, secure checkout, a dedicated customer portal, and a powerful administrator dashboard to manage orders, inventory CRUD, service areas, and business partners.
 
 ---
 
 ## 🌟 Core Features
 
 ### 👤 Customer Experience
-- **Interactive Product Catalog:** Browse furniture and appliances with real-time text search and category filters.
-- **Flexible Tenure Pricing Matrix:** Choose different rental durations (1, 3, 6, or 12 months) on individual product details; pricing scales dynamically.
+- **Interactive Product Catalog:** Browse furniture and appliances with real-time text search, category tabs, and active service city filters.
+- **Location-Specific Catalogs:** Choose your current city in the navigation bar to filter and view product availability tailored to your location.
+- **Flexible Tenure Pricing Matrix:** Choose different rental durations (1, 3, 6, or 12 months) on individual product details; pricing scales dynamically (long-term leases cost less per month).
 - **Advanced Shopping Cart:** Adjust quantities and modify tenures of items directly inside the cart. Refundable security deposits and monthly rent are calculated instantly.
-- **Simulated Checkout & Payments:** Place rental bookings using mock credit/debit cards, UPI, or Net Banking options.
-- **My Rentals Dashboard:** Track active, scheduled, and completed rental agreements along with due dates.
+- **Simulated Checkout & Payments:** Place rental bookings choosing preferred delivery slots and mock payments (credit/debit cards, UPI, or Net Banking).
+- **My Rentals Dashboard:** Track active, scheduled, and completed rental agreements along with due dates. Users can request tenure extensions or schedule returns.
+- **Complaints & Disputes Panel:** Customers can report damage, request replacements, or raise billing/damage disputes with preferred service slots.
 
 ### 🛡️ Administrative Controls
-- **Metrics Dashboard:** View real-time analytics including total orders, active subscriptions, cumulative revenue, and stock count.
-- **Product Inventory Management (CRUD):** Add, update, and manage products, upload image URLs, configure tenure-based pricing structures, and control inventory.
-- **Order Processing:** Oversee customer rental requests and process pending orders.
+- **Metrics Dashboard:** View real-time analytics including Monthly Recurring Revenue (MRR), Asset Utilization Rate, active orders, and pending repair counts.
+- **Product Inventory Management (CRUD UI):** Add new items, edit existing catalogs (modify descriptions, imageUrls, stock counts, deposits, operating cities), or remove products from the catalog.
+- **Order & Returns Processing:** Mark scheduled bookings as delivered to establish active leases, and confirm pickup return requests to restock product inventory.
+- **User Directory Monitoring:** Review registered customer and administrator accounts, roles, and profile information.
+- **Service Areas & Partners Tab:** Configure operating cities where RentEase is active, and track seeded business partners (delivery, repair, and maintenance vendors) handling logistics.
+- **CSV Data Export:** Generate and download comprehensive CSV reports for Orders History, Active Leases, or Complaints Logs directly from the dashboard.
 
 ### 🔑 Authentication & Security
-- **JWT Authorization:** Secured endpoints with token verification.
+- **JWT Authorization:** Secured API endpoints with token verification.
 - **Role-Based Routing:** Protected page guards for customer routes (`/checkout`, `/my-rentals`) and administrator panels (`/admin`).
 - **Autofill Quick-Login:** Quick-credentials buttons on the Login page for convenient testing.
 
@@ -29,7 +34,7 @@ RentEase is a full-stack web application designed for renting furniture and home
 
 | Layer | Technologies |
 | :--- | :--- |
-| **Frontend** | React 19, Vite, Tailwind CSS 3, React Router 7, Lucide Icons, Fetch API |
+| **Frontend** | React 19, Vite, Tailwind CSS 3, React Router 7, Lucide Icons, Fetch API, Local Storage |
 | **Backend** | Node.js, Express 5, Mongoose 9, JWT (JsonWebToken), BcryptJS, CORS, Dotenv |
 | **Database** | MongoMemoryServer (Embedded for zero-config runs) or MongoDB Atlas |
 
@@ -81,9 +86,9 @@ sequenceDiagram
         API->>DB: Set status to 'Returned' & Increment stock inventory
         API-->>Admin: Inventory restocked
     and Request Maintenance
-        User->>API: Report damage/malfunction (POST /api/rentals/:id/maintenance)
+        User->>API: Report damage/malfunction/dispute (POST /api/rentals/:id/maintenance)
         API->>DB: Create Maintenance ticket (Status: 'Open')
-        API-->>User: Repair ticket raised
+        API-->>User: Service/Dispute ticket raised
         Admin->>API: Update Repair status/notes (PUT /api/rentals/maintenance/:id)
         API->>DB: Save status & adminNotes
         API-->>Admin: Ticket updated
@@ -110,8 +115,9 @@ graph TD
         AuthCtx[Auth Context - Session Storage]:::client
         CartCtx[Cart Context - Reducer Store]:::client
         UIRouter[React Router - Guards Route Access]:::client
+        CitySel[City Selector - Dropdown & LocalStorage]:::client
         MyRentDashboard[My Rentals Dashboard - Tabbed View]:::client
-        AdminCtrl[Admin Panel - Operations Management]:::client
+        AdminCtrl[Admin Panel - CRUD, Users & Partners]:::client
     end
 
     %% Backend Block
@@ -121,6 +127,7 @@ graph TD
         ProdController[Products Router]:::server
         OrderController[Orders Router]:::server
         RentController[Rentals Router]:::server
+        AdminController[Admin Router]:::server
     end
 
     %% Database Block
@@ -132,34 +139,24 @@ graph TD
     %% Interconnection edges
     AuthCtx <-->|JWT Bearer token| AuthGuard
     CartCtx -->|POST JSON order items| OrderController
+    CitySel -->|Query products by city| ProdController
     MyRentDashboard <-->|Get rentals & raise maintenance| RentController
     AdminCtrl <-->|Deliver orders & Resolve tickets| AdminGuard
-    AdminGuard --> RentController & OrderController
+    AdminGuard --> RentController & OrderController & AdminController
     
-    ProdController & OrderController & RentController <-->|Mongoose ODM Queries| MongoMem
-    ProdController & OrderController & RentController <-->|Production Failover| Atlas
+    ProdController & OrderController & RentController & AdminController <-->|Mongoose ODM Queries| MongoMem
+    ProdController & OrderController & RentController & AdminController <-->|Production Failover| Atlas
 ```
-
-### ⚙️ Architecture Detail
-1. **Frontend (Client Process)**:
-   - Built as a Single Page Application (SPA). React context provides global hooks (`useAuth`, `useCart`) to prevent redundant API fetches.
-   - Client-side navigation guards route security. Normal users are isolated from `/admin` endpoints, and guests are redirected to `/login` when trying to checkout.
-2. **Backend (Server Process)**:
-   - Express runs an asynchronous REST API.
-   - JWT tokens are validated statelessly using symmetric keys on the `Authorization` header.
-   - Separate router scopes manage collections.
-3. **Database (Data Process)**:
-   - For simple local setups, `mongodb-memory-server` spins up a virtual Mongo instance in the background. It persists data to a local `.mongodb_data` directory, meaning developers do not need to install MongoDB on their machine.
-   - Transitioning to production requires setting the environment variable `MONGODB_URI` to connect directly to a live cluster.
 
 ---
 
 ## 💡 Why This Design? (Architecture Decisions)
 
-- **Tenure-Based Subscriptions**: Traditional e-commerce models use flat pricing. RentEase implements a dynamic pricing matrix (`pricing: { 1: X, 3: Y, 6: Z, 12: W }`). Choosing a longer lease duration lowers the monthly rental rate, reflecting real-world rental business models where long-term customer lock-in yields higher predictable LTV (Lifetime Value).
+- **Tenure-Based Subscriptions**: Traditional e-commerce models use flat pricing. RentEase implements a dynamic pricing matrix (`pricing: { 1: X, 3: Y, 6: Z, 12: W }`). Choosing a longer lease duration lowers the monthly rental rate, reflecting real-world rental business models where long-term customer lock-in yields higher predictable LTV.
 - **Physical Operations Alignment**: When a customer checkouts, a `Rental` is **not** immediately active. The system separates the checkout booking (`Order` set to `Scheduled`) from lease activation (`Rental` set to `Active`). A rental lease only starts when the product is physically delivered to the site, allowing shipping/lead time tracking.
 - **Inventory Protection Lock**: When an order is placed, stock levels are decremented instantly to prevent over-booking. If the order is cancelled before delivery, stock is immediately restored.
-- **Complaints loop**: Maintenance requests are tied directly to active leases. By adding `adminNotes` and `status` updates on the ticket, RentEase ensures customers and support technicians have a synchronous communications channel.
+- **Complaints & Disputes loop**: Maintenance requests are tied directly to active leases. By adding `adminNotes` and `status` updates on the ticket, RentEase ensures customers and support technicians have a synchronous communications channel.
+- **Service Area Constraints**: Products are tagged with a target operating `city` (defaulting to 'All'). This allows scaling RentEase to multiple cities, restricting product catalog displays to match user location selector details.
 - **Strict Registration Guards**: Normal user accounts require no keys, but registering a Manager account requires the private passcode (`Rent555`). This prevents arbitrary users from gaining administrative control in a real deployment.
 
 ---
@@ -171,7 +168,14 @@ RentEase/
 ├── backend/
 │   ├── config/          # DB connections and environment configs
 │   ├── middleware/      # Auth guards and validation layers
-│   ├── models/          # Mongoose schemas (User, Product, Order, Rental)
+│   ├── models/          # Mongoose schemas
+│   │   ├── User.js        # User credentials and roles
+│   │   ├── Product.js     # Catalog products with tenure matrix
+│   │   ├── Order.js       # Order checkout slots and address
+│   │   ├── Rental.js      # Active rental leases and returns
+│   │   ├── Maintenance.js # Support tickets and disputes
+│   │   ├── Business.js    # [NEW] Business partners and vendors
+│   │   └── ServiceArea.js # [NEW] Active operating cities
 │   ├── routes/          # API endpoint router files
 │   ├── server.js        # Entry server point with automatic seeding logic
 │   └── test.js          # API integration tests
@@ -179,9 +183,18 @@ RentEase/
 ├── frontend/
 │   ├── public/          # Static assets
 │   ├── src/
-│   │   ├── components/  # Layout components (Navbar, etc.)
+│   │   ├── components/  # Layout components (Navbar with City Selector)
 │   │   ├── context/     # React state managers (AuthContext, CartContext)
-│   │   ├── pages/       # Route pages (Home, Catalog, AdminDashboard, etc.)
+│   │   ├── pages/       # Route pages
+│   │   │   ├── Home.jsx           # Landing page
+│   │   │   ├── Catalog.jsx        # Product catalog with city filter
+│   │   │   ├── ProductDetail.jsx  # Tenure choice details
+│   │   │   ├── Cart.jsx           # Quantity & Tenure adjustments
+│   │   │   ├── Checkout.jsx       # Delivery date and slot selector
+│   │   │   ├── MyRentals.jsx      # Active rentals & support tickets
+│   │   │   ├── AdminDashboard.jsx # Stats, Order delivery, CRUD, Users, Partners, CSV Exports
+│   │   │   ├── Login.jsx          # User quick log-in credentials
+│   │   │   └── Register.jsx       # Registration with Manager passcode
 │   │   ├── App.jsx      # Navigation routing & global providers
 │   │   └── main.jsx     # Root rendering entry
 ```
@@ -211,6 +224,7 @@ This will automatically:
 - ✅ Start Backend on `http://localhost:5000`
 - ✅ Start Frontend on `http://localhost:5173`
 - ✅ Initialize MongoDB with in-memory server
+- ✅ Auto-seed Products, Admin/User Accounts, Service Areas, and Business Partners
 - ✅ Setup API proxy between frontend and backend
 
 ---
@@ -258,36 +272,6 @@ This will automatically:
    ```
    *The application will boot on `http://localhost:5173`.*
 
-### 🛠️ Editor Configuration (VS Code)
-
-To suppress CSS linting warnings for Tailwind directives (e.g., `@tailwind`, `@apply`, `@layer`) in VS Code, a workspace configuration is included in `.vscode/settings.json`:
-```json
-{
-  "css.lint.unknownAtRules": "ignore"
-}
-```
-*Tip: Installing the official **Tailwind CSS IntelliSense** extension is highly recommended for autocomplete and automatic syntax support.*
-
----
-
-### 📝 Setup Files & Configuration
-
-The project has been configured for seamless full-stack development:
-
-| File | Purpose |
-|------|---------|
-| `package.json` (root) | Root-level scripts to run backend & frontend together |
-| `scripts/dev.js` | Custom launcher for parallel backend/frontend execution |
-| `frontend/vite.config.js` | API proxy configuration for development (routes `/api` to backend) |
-| `frontend/src/config.js` | Dynamic API URL configuration (uses proxy in dev, direct URL in production) |
-| `vercel.json` (root) | Vercel deployment configuration for full-stack app |
-
-**Key Features:**
-- 🔄 Single command to start both services
-- 🔗 Automatic API proxy between frontend and backend
-- 📦 In-memory MongoDB with local persistence
-- 🚀 Ready for Vercel deployment
-
 ---
 
 ## 🧪 Testing
@@ -297,7 +281,7 @@ To run backend integration tests:
    ```bash
    npm test
    ```
-   *This programmatically checks user register/login flows, product seedings, and order dispatch sequences.*
+   *This programmatically checks user register/login flows, product seedings, and order checkout sequences.*
 
 ---
 
@@ -305,6 +289,7 @@ To run backend integration tests:
 
 For testing and initial execution:
 - **Boot Seeding**: The server automatically boots up with default accounts in clean databases (`user@rentease.com`/`user123` as a standard Customer, and `admin@rentease.com`/`admin123` as a Manager).
+- **Service Areas & Partners Seeding**: Automatically seeds active cities (Bangalore, Delhi, Mumbai, Pune, Hyderabad) and business partners (Swift Logistics, FixIt Squad, Clean & Shine) on database boot.
 - **Manager Signups**: Select **I'm a Manager** on the registration page and input the authorization key **`Rent555`** to secure administrative privileges.
 - **Customer Signups**: Standard registrations require no passcode.
 
@@ -318,8 +303,11 @@ For testing and initial execution:
 - `GET /me` - Retrieve profile info of currently logged-in user.
 
 ### 📦 Products (`/api/products`)
-- `GET /` - Fetch catalog products (supports searching & category parameters).
+- `GET /` - Fetch catalog products (supports searching, category, and city query parameters).
 - `GET /:id` - Retrieve details of a single product.
+- `POST /` - **(Admin)** Create a new product.
+- `PUT /:id` - **(Admin)** Edit details of an existing product.
+- `DELETE /:id` - **(Admin)** Delete a product.
 
 ### 🛒 Orders & Checkout (`/api/orders`)
 - `POST /` - Place a new order (creates a `Scheduled` order).
@@ -332,9 +320,18 @@ For testing and initial execution:
 - `GET /` - Fetch active/extended/return-scheduled rentals for the current customer.
 - `POST /:id/extend` - Extend an active rental lease by `1`, `3`, `6`, or `12` months.
 - `POST /:id/return` - Request return pickup date & timing slot (sets status to `ReturnRequested`).
-- `POST /:id/maintenance` - Raise a repair/service ticket for active leases.
+- `POST /:id/maintenance` - Raise a repair/service ticket or billing/damage dispute.
 - `GET /maintenance/user` - Fetch list of repair tickets raised by the current user.
 - `GET /admin/all` - **(Admin)** Fetch all active leases in the system.
-- `GET /maintenance/all` - **(Admin)** Fetch all maintenance complaints.
-- `PUT /maintenance/:id` - **(Admin)** Update maintenance ticket status (Open -> In Progress -> Resolved -> Cancelled) and save admin response notes.
+- `GET /maintenance/all` - **(Admin)** Fetch all maintenance complaints and disputes.
+- `PUT /maintenance/:id` - **(Admin)** Update maintenance ticket status and save admin response notes.
 - `PUT /:id/return-complete` - **(Admin)** Confirm return pickup, set rental status to `Returned`, and restore inventory levels.
+
+### 🛡️ Admin Operations (`/api/admin`)
+- `GET /stats` - **(Admin)** Fetch dashboard metrics (MRR, stock levels, utilization rate, etc.).
+- `GET /users` - **(Admin)** Fetch list of all registered accounts.
+- `GET /businesses` - **(Admin)** Fetch all business partner vendors.
+- `GET /service-areas` - Fetch active service cities.
+- `POST /service-areas` - **(Admin)** Create a new active service city.
+- `PUT /service-areas/:id` - **(Admin)** Update city details or toggle status.
+- `DELETE /service-areas/:id` - **(Admin)** Remove a service area.
